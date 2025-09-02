@@ -1,0 +1,121 @@
+/* ===== LAYOUT BASE ===== */
+.shell {
+  min-height: 100dvh;      /* só para garantir altura mínima */
+}
+
+/* ===== SIDEBAR FIXO ===== */
+.sidebar {
+  position: fixed;          /* 👈 fixa */
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  background: #1e1a17;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  z-index: 10;              /* acima do conteúdo */
+}
+
+.brand { margin-bottom: 10px; }
+
+.nav { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.navItem {
+  background: #2b231f;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .15s ease;
+}
+.navItem:hover { background: #3a302b; }
+.navItemActive { background: #3a302b; border-color: rgba(255,255,255,.16); }
+.navFoot { margin-top: auto; }
+
+/* ===== TOPO (FAIXA MARROM) – role com a página ===== */
+.topbar {
+  /* nada de sticky/fixed aqui */
+  height: 56px;
+  padding: 0 16px;
+  margin-left: 260px;        /* 👈 desloca para fora do sidebar */
+  background: var(--mantine-color-sand-3);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  display: flex; align-items: center;
+}
+
+/* ===== CONTEÚDO ===== */
+.content {
+  margin-left: 260px;        /* 👈 acompanha o deslocamento */
+  padding: 16px;
+}
+.contentInner { max-width: 1280px; margin: 0 auto; }
+
+/* ===== CARDS / PAINÉIS ===== */
+.cardKpi {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 8px 20px rgba(0,0,0,.06);
+  border-radius: 12px;
+}
+.kpiIcon {
+  background: var(--mantine-color-orange-5);
+  color: #fff;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: grid; place-items: center;
+  box-shadow: 0 6px 14px rgba(0,0,0,.16);
+}
+.deltaUp { color: #0a8f44; }
+.deltaDown { color: #d62828; }
+
+.panel {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 8px 20px rgba(0,0,0,.06);
+  border-radius: 12px;
+}
+.chartPlaceholder {
+  height: 280px;
+  border: 1px dashed rgba(0,0,0,.15);
+  border-radius: 10px;
+  display: grid; place-items: center;
+  background: #faf9f7;
+}
+.table th { background: #faf9f7; font-weight: 700; }
+
+/* ===== FOOTER (alinhar com o conteúdo) ===== */
+.footer {
+  background: #2b231f;
+  padding: 12px 0;
+  color: #e8dbd2;
+  text-align: center;
+  margin-left: 260px;        /* 👈 acompanha a coluna principal */
+}
+
+/* ===== MOBILE / TABLET ===== */
+@media (max-width: 1024px) {
+  .sidebar { display: none; }     /* some a barra fixa no mobile */
+  .topbar,
+  .content,
+  .footer {
+    margin-left: 0;               /* volta a ocupar a tela toda */
+  }
+  .content { padding: 12px; }
+  .burger { display: inline-grid; }
+}
+
+/* esconda sempre no desktop */
+.burger {
+  display: none !important;
+}
+
+/* mostra só em tablet/mobile */
+@media (max-width: 1024px) {
+  .burger {
+    display: inline-grid !important;
+  }
+}
