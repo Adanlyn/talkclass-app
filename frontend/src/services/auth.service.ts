@@ -1,7 +1,7 @@
 import api from "./api";
 
 export async function login(cpf: string, senha: string) {
-  const { data } = await api.post("/api/auth/login", { cpf, senha });
+  const { data } = await api.post("/auth/login", { cpf, senha });
 
   // salva token + expiração
   localStorage.setItem("talkclass.jwt", data.token);
@@ -12,7 +12,7 @@ export async function login(cpf: string, senha: string) {
 }
 
 export async function getMe() {
-  const { data } = await api.get("/api/user/me");
+  const { data } = await api.get("/user/me");
   return data;
 }
 

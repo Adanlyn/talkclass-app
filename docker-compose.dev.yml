@@ -1,0 +1,64 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: talkclass
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: talkclass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d talkclass || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    working_dir: /src
+    volumes:
+      - ./backend/src:/src
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      URLS: http://0.0.0.0:5252        # << garante bind em todas as ifaces
+      ASPNETCORE_URLS: http://0.0.0.0:5252
+      ConnectionStrings__Postgres: Host=db;Port=5432;Database=talkclass;Username=postgres;Password=talkclass
+      Jwt__Issuer: TalkClass
+      Jwt__Audience: TalkClass.Frontend
+      Jwt__Key: "kKc4Hn9M2RzQ8sW1tV5yL0pB7fD3jE6aP9xY2uT4mN8qR5sC1vG7hJ0kL3wZ6bD"
+      Jwt__ExpiresMinutes: 60
+    ports:
+      - "5252:5252"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "
+        dotnet restore TalkClass.sln &&
+        dotnet run --project TalkClass.API --no-restore --urls http://0.0.0.0:5252
+      "
+
+  web:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    environment:
+      # O front (rodando no browser do host) acessa a API no host:5252
+      VITE_API_URL: http://localhost:5252
+    ports:
+      - "5174:5174"
+    depends_on:
+      - api
+    command: >
+      sh -c "
+        if [ -f package-lock.json ]; then npm ci; else npm i; fi &&
+        npm run dev -- --host 0.0.0.0 --port 5174
+      "
+
+volumes:
+  pg-data:

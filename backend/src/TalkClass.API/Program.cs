@@ -13,15 +13,23 @@ using TalkClass.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Se rodar em container, força bind em 0.0.0.0:5252
+if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+{
+    builder.WebHost.UseUrls("http://0.0.0.0:5252");
+}
+
 const string MyCors = "_mycors";
 builder.Services.AddCors(o =>
 {
     o.AddPolicy(MyCors, p => p
         .WithOrigins(
-            "http://localhost:5500",   // VSCode Live Server
-            "http://127.0.0.1:5500",
             "http://localhost:5173",
-            "http://localhost:5174"//    // Vite/React
+            "http://127.0.0.1:5173",
+            "http://localhost:5174",
+            "http://127.0.0.1:5174",
+            "http://localhost:5500",
+            "http://127.0.0.1:5500"
         )
         .AllowAnyHeader()
         .AllowAnyMethod());
@@ -58,7 +66,7 @@ builder.Services.AddScoped<FluentValidation.IValidator<LoginRequestDto>, LoginRe
 
 var app = builder.Build();
 
-// 7) Migrate e SEED (Dev)
+// 7) Migrate e SEED
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -79,13 +87,11 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// 8) Middleware
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-app.UseCors(MyCors);            // << ADICIONE ESTA LINHA AQUI
+// 8) Middleware (Swagger sempre ativo)
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseCors(MyCors);
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -93,4 +99,5 @@ app.UseAuthorization();
 // 9) Endpoints
 app.MapAuthEndpoints();
 app.MapUserEndpoints();
+
 app.Run();

@@ -606,19 +606,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\solli\\.nuget\\packages\\": {}
+    "/root/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj",
+      "projectUniqueName": "/src/TalkClass.Application/TalkClass.Application.csproj",
       "projectName": "TalkClass.Application",
-      "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj",
-      "packagesPath": "C:\\Users\\solli\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\obj\\",
+      "projectPath": "/src/TalkClass.Application/TalkClass.Application.csproj",
+      "packagesPath": "/root/.nuget/packages/",
+      "outputPath": "/src/TalkClass.Application/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\solli\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/root/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -630,8 +630,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj": {
-              "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj"
+            "/src/TalkClass.Domain/TalkClass.Domain.csproj": {
+              "projectPath": "/src/TalkClass.Domain/TalkClass.Domain.csproj"
             }
           }
         }
@@ -676,7 +676,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KNoomxuV7CY=",
+  "dgSpecHash": "PeDDNSlJW4Q=",
   "success": true,
-  "projectFilePath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj",
+  "projectFilePath": "/src/TalkClass.Domain/TalkClass.Domain.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
