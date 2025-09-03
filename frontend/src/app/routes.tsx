@@ -9,6 +9,7 @@ import Admin from '../pages/Admin';
 import AdminCategories from '../pages/AdminCategories';
 import AdminFeedbacks from '../pages/AdminFeedbacks';
 import AdminUsers from '../pages/AdminUsers';
+import ProtectedRoute from '../routes/ProtectedRoute';
 
 export const router = createBrowserRouter([
   { path: '/', element: <Home /> },
@@ -19,8 +20,8 @@ export const router = createBrowserRouter([
   { path: '/redefinir-senha', element: <RedefinirSenha /> },
 
   // Painel
-  { path: '/admin', element: <Admin /> },
-  { path: '/admin/categorias', element: <AdminCategories /> },
-  { path: '/admin/feedbacks', element: <AdminFeedbacks /> },
-  { path: '/admin/usuarios', element: <AdminUsers /> },
+  { path: '/admin', element: <ProtectedRoute><Admin /></ProtectedRoute> },
+  { path: '/admin/categorias', element: <ProtectedRoute><AdminCategories /></ProtectedRoute> },
+  { path: '/admin/feedbacks', element: <ProtectedRoute><AdminFeedbacks /></ProtectedRoute> },
+  { path: '/admin/usuarios', element: <ProtectedRoute><AdminUsers /></ProtectedRoute> },
 ]);

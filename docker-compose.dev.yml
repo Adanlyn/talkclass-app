@@ -25,6 +25,8 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       URLS: http://0.0.0.0:5252        # << garante bind em todas as ifaces
+      DOTNET_USE_POLLING_FILE_WATCHER: "1"   # <— força polling
+      DOTNET_WATCH_SUPPRESS_EMOJIS: "1"
       ASPNETCORE_URLS: http://0.0.0.0:5252
       ConnectionStrings__Postgres: Host=db;Port=5432;Database=talkclass;Username=postgres;Password=talkclass
       Jwt__Issuer: TalkClass
@@ -38,8 +40,8 @@ services:
         condition: service_healthy
     command: >
       sh -c "
-        dotnet restore TalkClass.sln &&
-        dotnet run --project TalkClass.API --no-restore --urls http://0.0.0.0:5252
+      dotnet restore TalkClass.sln &&
+      dotnet watch --project TalkClass.API run --no-restore --urls http://0.0.0.0:5252
       "
 
   web:

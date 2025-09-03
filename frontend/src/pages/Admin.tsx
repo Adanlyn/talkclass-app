@@ -29,6 +29,8 @@ import HeaderAdmin from '../components/HeaderAdmin';
 import ProfileModal, { loadProfile, type ProfileData } from '../components/ProfileModal';
 import { useEffect, useMemo, useState } from 'react';
 import classes from './Admin.module.css';
+import { logoutAndReload } from '../utils/auth';
+
 
 const kpis = [
   { label: 'NPS Acadêmico', value: '+34', delta: '+4', icon: IconChartHistogram },
@@ -62,7 +64,7 @@ export default function Admin() {
   useEffect(() => { setProfileData(loadProfile()); }, []);
   const initials = useMemo(() => getInitials(profileData?.name || ''), [profileData?.name]);
 
-  const handleLogout = () => alert('Logout (mock)');
+  const handleLogout = () => logoutAndReload('/login');
 
   return (
     <div className={classes.page}>

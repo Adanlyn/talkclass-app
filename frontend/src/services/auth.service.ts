@@ -17,6 +17,6 @@ export async function getMe() {
 }
 
 export function logout() {
-  localStorage.removeItem("talkclass.jwt");
-  localStorage.removeItem("talkclass.jwt_exp");
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(EXP_KEY);
 }

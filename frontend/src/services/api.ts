@@ -1,19 +1,30 @@
 import axios from 'axios';
+import { getToken, isLoggedIn, logoutAndReload } from '../utils/auth';
 
-// baseURL vem do .env (VITE_API_URL=http://localhost:5252)
 const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:5252').replace(/\/$/, '');
-console.log('[API] baseURL =', baseURL);
 
 const api = axios.create({
-  baseURL: `${baseURL}/api`,                                                              
-  withCredentials: false, // não usamos cookies
+  baseURL: `${baseURL}/api`,
+  withCredentials: false,
 });
 
-// intercepta requests para anexar token do localStorage
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('auth_token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  const token = getToken();
+  if (token && isLoggedIn()) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
+
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err?.response?.status === 401) {
+      logoutAndReload('/login'); // se token inválido, força logout
+    }
+    return Promise.reject(err);
+  }
+);
 
 export default api;
