@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/src/TalkClass.Domain/TalkClass.Domain.csproj",
+      "projectUniqueName": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj",
       "projectName": "TalkClass.Domain",
-      "projectPath": "/src/TalkClass.Domain/TalkClass.Domain.csproj",
+      "projectPath": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj",
       "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/src/TalkClass.Domain/obj/",
+      "outputPath": "/workspace/src/TalkClass.Domain/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/root/.nuget/NuGet/NuGet.Config"

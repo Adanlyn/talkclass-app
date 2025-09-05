@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ASV2tskKGWo=",
+  "dgSpecHash": "QQrA1kAw+7U=",
   "success": true,
-  "projectFilePath": "/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj",
+  "projectFilePath": "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj",
   "expectedPackageFiles": [
     "/root/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/root/.nuget/packages/fluentvalidation/12.0.0/fluentvalidation.12.0.0.nupkg.sha512",

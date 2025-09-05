@@ -2918,11 +2918,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj",
+      "projectUniqueName": "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj",
       "projectName": "TalkClass.Infrastructure",
-      "projectPath": "/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj",
+      "projectPath": "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj",
       "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/src/TalkClass.Infrastructure/obj/",
+      "outputPath": "/workspace/src/TalkClass.Infrastructure/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/root/.nuget/NuGet/NuGet.Config"
@@ -2937,11 +2937,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/src/TalkClass.Application/TalkClass.Application.csproj": {
-              "projectPath": "/src/TalkClass.Application/TalkClass.Application.csproj"
+            "/workspace/src/TalkClass.Application/TalkClass.Application.csproj": {
+              "projectPath": "/workspace/src/TalkClass.Application/TalkClass.Application.csproj"
             },
-            "/src/TalkClass.Domain/TalkClass.Domain.csproj": {
-              "projectPath": "/src/TalkClass.Domain/TalkClass.Domain.csproj"
+            "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj": {
+              "projectPath": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj"
             }
           }
         }

@@ -611,11 +611,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/src/TalkClass.Application/TalkClass.Application.csproj",
+      "projectUniqueName": "/workspace/src/TalkClass.Application/TalkClass.Application.csproj",
       "projectName": "TalkClass.Application",
-      "projectPath": "/src/TalkClass.Application/TalkClass.Application.csproj",
+      "projectPath": "/workspace/src/TalkClass.Application/TalkClass.Application.csproj",
       "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/src/TalkClass.Application/obj/",
+      "outputPath": "/workspace/src/TalkClass.Application/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/root/.nuget/NuGet/NuGet.Config"
@@ -630,8 +630,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/src/TalkClass.Domain/TalkClass.Domain.csproj": {
-              "projectPath": "/src/TalkClass.Domain/TalkClass.Domain.csproj"
+            "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj": {
+              "projectPath": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj"
             }
           }
         }

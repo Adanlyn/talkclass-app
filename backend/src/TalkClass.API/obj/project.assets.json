@@ -3524,11 +3524,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/src/TalkClass.API/TalkClass.API.csproj",
+      "projectUniqueName": "/workspace/src/TalkClass.API/TalkClass.API.csproj",
       "projectName": "TalkClass.API",
-      "projectPath": "/src/TalkClass.API/TalkClass.API.csproj",
+      "projectPath": "/workspace/src/TalkClass.API/TalkClass.API.csproj",
       "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/src/TalkClass.API/obj/",
+      "outputPath": "/workspace/src/TalkClass.API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/root/.nuget/NuGet/NuGet.Config"
@@ -3543,11 +3543,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/src/TalkClass.Application/TalkClass.Application.csproj": {
-              "projectPath": "/src/TalkClass.Application/TalkClass.Application.csproj"
+            "/workspace/src/TalkClass.Application/TalkClass.Application.csproj": {
+              "projectPath": "/workspace/src/TalkClass.Application/TalkClass.Application.csproj"
             },
-            "/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj": {
-              "projectPath": "/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj"
+            "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj": {
+              "projectPath": "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj"
             }
           }
         }

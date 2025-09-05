@@ -20,3 +20,14 @@ C:/Users/solli/Documents/talkclass-app/backend/src/TalkClass.Domain/obj/Debug/ne
 /src/TalkClass.Domain/obj/Debug/net8.0/refint/TalkClass.Domain.dll
 /src/TalkClass.Domain/obj/Debug/net8.0/TalkClass.Domain.pdb
 /src/TalkClass.Domain/obj/Debug/net8.0/ref/TalkClass.Domain.dll
+/workspace/src/TalkClass.Domain/bin/Debug/net8.0/TalkClass.Domain.deps.json
+/workspace/src/TalkClass.Domain/bin/Debug/net8.0/TalkClass.Domain.dll
+/workspace/src/TalkClass.Domain/bin/Debug/net8.0/TalkClass.Domain.pdb
+/workspace/src/TalkClass.Domain/obj/Debug/net8.0/TalkClass.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/src/TalkClass.Domain/obj/Debug/net8.0/TalkClass.Domain.AssemblyInfoInputs.cache
+/workspace/src/TalkClass.Domain/obj/Debug/net8.0/TalkClass.Domain.AssemblyInfo.cs
+/workspace/src/TalkClass.Domain/obj/Debug/net8.0/TalkClass.Domain.csproj.CoreCompileInputs.cache
+/workspace/src/TalkClass.Domain/obj/Debug/net8.0/TalkClass.Domain.dll
+/workspace/src/TalkClass.Domain/obj/Debug/net8.0/refint/TalkClass.Domain.dll
+/workspace/src/TalkClass.Domain/obj/Debug/net8.0/TalkClass.Domain.pdb
+/workspace/src/TalkClass.Domain/obj/Debug/net8.0/ref/TalkClass.Domain.dll
