@@ -67,6 +67,170 @@ namespace TalkClass.Infrastructure.Migrations
 
                     b.ToTable("administradores", (string)null);
                 });
+
+            modelBuilder.Entity("TalkClass.Domain.Entities.Categoria", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("categorias", (string)null);
+                });
+
+            modelBuilder.Entity("TalkClass.Domain.Entities.Feedback", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CategoriaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CursoOuTurma")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OrigemIp")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoriaId");
+
+                    b.ToTable("feedbacks", (string)null);
+                });
+
+            modelBuilder.Entity("TalkClass.Domain.Entities.FeedbackResposta", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FeedbackId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PerguntaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("integer");
+
+                    b.Property<bool?>("ValorBool")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("ValorNota")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ValorOpcao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ValorTexto")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FeedbackId");
+
+                    b.HasIndex("PerguntaId");
+
+                    b.ToTable("feedback_respostas", (string)null);
+                });
+
+            modelBuilder.Entity("TalkClass.Domain.Entities.Pergunta", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CategoriaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Enunciado")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<int?>("MaxValor")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("MinValor")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Opcoes")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoriaId");
+
+                    b.ToTable("perguntas", (string)null);
+                });
+
+            modelBuilder.Entity("TalkClass.Domain.Entities.Feedback", b =>
+                {
+                    b.HasOne("TalkClass.Domain.Entities.Categoria", "Categoria")
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("TalkClass.Domain.Entities.FeedbackResposta", b =>
+                {
+                    b.HasOne("TalkClass.Domain.Entities.Feedback", "Feedback")
+                        .WithMany("Respostas")
+                        .HasForeignKey("FeedbackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TalkClass.Domain.Entities.Pergunta", "Pergunta")
+                        .WithMany()
+                        .HasForeignKey("PerguntaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Feedback");
+
+                    b.Navigation("Pergunta");
+                });
+
+            modelBuilder.Entity("TalkClass.Domain.Entities.Pergunta", b =>
+                {
+                    b.HasOne("TalkClass.Domain.Entities.Categoria", "Categoria")
+                        .WithMany("Perguntas")
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("TalkClass.Domain.Entities.Categoria", b =>
+                {
+                    b.Navigation("Perguntas");
+                });
+
+            modelBuilder.Entity("TalkClass.Domain.Entities.Feedback", b =>
+                {
+                    b.Navigation("Respostas");
+                });
 #pragma warning restore 612, 618
         }
     }

@@ -10,6 +10,9 @@ using TalkClass.Application.Common.Interfaces;
 using TalkClass.Application.Validations;
 using TalkClass.Infrastructure.Auth;
 using TalkClass.Infrastructure.Persistence;
+using TalkClass.Application.Feedbacks.Dtos;
+using TalkClass.Application.Feedbacks.Validators;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +41,9 @@ builder.Services.AddCors(o =>
 // 1) Config
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
+builder.Services.AddScoped<FluentValidation.IValidator<CreateFeedbackDto>, CreateFeedbackValidator>();
+
+
 // 2) DbContext (Postgres)
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
@@ -65,6 +71,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<FluentValidation.IValidator<LoginRequestDto>, LoginRequestValidator>();
 
 var app = builder.Build();
+
+builder.Services.AddScoped<FluentValidation.IValidator<CreateFeedbackDto>, CreateFeedbackValidator>();
 
 // 7) Migrate e SEED
 using (var scope = app.Services.CreateScope())
@@ -99,5 +107,5 @@ app.UseAuthorization();
 // 9) Endpoints
 app.MapAuthEndpoints();
 app.MapUserEndpoints();
-
+app.MapFeedbackEndpoints();   
 app.Run();

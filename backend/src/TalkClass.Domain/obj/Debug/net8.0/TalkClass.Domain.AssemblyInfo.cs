@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TalkClass.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b899fb4f2c3778344944f077166c39347c96b23f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+49956512140c3805bb4f4b9699e4be0df3f36b55")]
 [assembly: System.Reflection.AssemblyProductAttribute("TalkClass.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TalkClass.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
