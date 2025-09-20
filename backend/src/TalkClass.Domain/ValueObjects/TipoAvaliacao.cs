@@ -1,9 +1,10 @@
-namespace TalkClass.Domain.Enums;
-
-public enum TipoAvaliacao
+namespace TalkClass.Domain.ValueObjects
 {
-    Nota = 1,       // 1..5 (ou outra escala)
-    SimNao = 2,     // true/false
-    Frequencia = 3, // "Sempre;Às vezes;Raramente;Nunca"
-    Texto = 4       // resposta aberta
+    public enum TipoAvaliacao
+    {
+        Nota = 0,      // escala 1..5 (Likert)
+        SimNao = 1,    // radio "sim" / "nao"
+        Multipla = 2,  // múltipla escolha (opções)
+        Texto = 3      // resposta aberta
+    }
 }

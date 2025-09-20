@@ -1,4 +1,4 @@
-using TalkClass.Domain.Enums;
+using TalkClass.Domain.ValueObjects;
 
 namespace TalkClass.Domain.Entities;
 

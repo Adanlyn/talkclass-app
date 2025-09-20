@@ -1,20 +1,20 @@
-using TalkClass.Domain.Enums;
+using TalkClass.Domain.ValueObjects;
 
 namespace TalkClass.Domain.Entities;
 
 public class Pergunta
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
+
     public Guid CategoriaId { get; set; }
-    public string Enunciado { get; set; } = default!;
-    public TipoAvaliacao Tipo { get; set; }
+    public Categoria Categoria { get; set; } = null!;
 
-    // Escala numérica (opcional)
-    public int? MinValor { get; set; }
-    public int? MaxValor { get; set; }
+    public string Enunciado { get; set; } = null!;
+    public TipoAvaliacao Tipo { get; set; }          // Nota | SimNao | Multipla | Texto
+    public bool Obrigatoria { get; set; } = true;
+    public int Ordem { get; set; }
+    public bool Ativa { get; set; } = true;
 
-    // Opções para frequência/múltipla escolha (se usar)
-    public string? Opcoes { get; set; } // "Sempre;Às vezes;Raramente;Nunca"
-
-    public Categoria Categoria { get; set; } = default!;
+    public ICollection<PerguntaOpcao> Opcoes { get; set; } = new List<PerguntaOpcao>();
+    public ICollection<FeedbackResposta> Respostas { get; set; } = new List<FeedbackResposta>();
 }

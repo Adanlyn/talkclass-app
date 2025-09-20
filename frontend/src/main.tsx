@@ -19,7 +19,6 @@ enableMocks().finally(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <MantineProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        {/* 👇 Agora toda a app está dentro do provider de notificações */}
         <NotificationsProvider>
           <RouterProvider router={router} />
         </NotificationsProvider>

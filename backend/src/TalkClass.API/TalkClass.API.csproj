@@ -29,6 +29,8 @@
   <ItemGroup>
     <ProjectReference Include="..\TalkClass.Infrastructure\TalkClass.Infrastructure.csproj" />
     <ProjectReference Include="..\TalkClass.Application\TalkClass.Application.csproj" />
+    <ProjectReference Include="..\TalkClass.Domain\TalkClass.Domain.csproj" />
+
   </ItemGroup>
 
 </Project>

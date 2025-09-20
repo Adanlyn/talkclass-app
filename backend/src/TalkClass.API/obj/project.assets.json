@@ -774,14 +774,10 @@
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         },
         "compile": {
-          "lib/net8.0/Npgsql.dll": {
-            "related": ".xml"
-          }
+          "lib/net8.0/Npgsql.dll": {}
         },
         "runtime": {
-          "lib/net8.0/Npgsql.dll": {
-            "related": ".xml"
-          }
+          "lib/net8.0/Npgsql.dll": {}
         }
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL/8.0.8": {
@@ -793,14 +789,10 @@
           "Npgsql": "8.0.4"
         },
         "compile": {
-          "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
-            "related": ".xml"
-          }
+          "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {}
         },
         "runtime": {
-          "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
-            "related": ".xml"
-          }
+          "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {}
         }
       },
       "Swashbuckle.AspNetCore/6.6.2": {
@@ -1675,7 +1667,6 @@
         "PACKAGE.md",
         "buildTransitive/net8.0/Microsoft.EntityFrameworkCore.props",
         "lib/net8.0/Microsoft.EntityFrameworkCore.dll",
-        "lib/net8.0/Microsoft.EntityFrameworkCore.xml",
         "microsoft.entityframeworkcore.8.0.8.nupkg.sha512",
         "microsoft.entityframeworkcore.nuspec"
       ]
@@ -1690,7 +1681,6 @@
         "Icon.png",
         "PACKAGE.md",
         "lib/net8.0/Microsoft.EntityFrameworkCore.Abstractions.dll",
-        "lib/net8.0/Microsoft.EntityFrameworkCore.Abstractions.xml",
         "microsoft.entityframeworkcore.abstractions.8.0.8.nupkg.sha512",
         "microsoft.entityframeworkcore.abstractions.nuspec"
       ]
@@ -2617,15 +2607,10 @@
         ".signature.p7s",
         "README.md",
         "lib/net6.0/Npgsql.dll",
-        "lib/net6.0/Npgsql.xml",
         "lib/net7.0/Npgsql.dll",
-        "lib/net7.0/Npgsql.xml",
         "lib/net8.0/Npgsql.dll",
-        "lib/net8.0/Npgsql.xml",
         "lib/netstandard2.0/Npgsql.dll",
-        "lib/netstandard2.0/Npgsql.xml",
         "lib/netstandard2.1/Npgsql.dll",
-        "lib/netstandard2.1/Npgsql.xml",
         "npgsql.8.0.4.nupkg.sha512",
         "npgsql.nuspec",
         "postgresql.png"
@@ -2640,7 +2625,6 @@
         ".signature.p7s",
         "README.md",
         "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll",
-        "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.xml",
         "npgsql.entityframeworkcore.postgresql.8.0.8.nupkg.sha512",
         "npgsql.entityframeworkcore.postgresql.nuspec",
         "postgresql.png"
@@ -3148,23 +3132,24 @@
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.8",
       "Swashbuckle.AspNetCore >= 6.6.2",
       "TalkClass.Application >= 1.0.0",
+      "TalkClass.Domain >= 1.0.0",
       "TalkClass.Infrastructure >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\solli\\.nuget\\packages\\": {}
+    "/root/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.API\\TalkClass.API.csproj",
+      "projectUniqueName": "/workspace/src/TalkClass.API/TalkClass.API.csproj",
       "projectName": "TalkClass.API",
-      "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.API\\TalkClass.API.csproj",
-      "packagesPath": "C:\\Users\\solli\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.API\\obj\\",
+      "projectPath": "/workspace/src/TalkClass.API/TalkClass.API.csproj",
+      "packagesPath": "/root/.nuget/packages/",
+      "outputPath": "/workspace/src/TalkClass.API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\solli\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/root/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -3176,11 +3161,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj": {
-              "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj"
+            "/workspace/src/TalkClass.Application/TalkClass.Application.csproj": {
+              "projectPath": "/workspace/src/TalkClass.Application/TalkClass.Application.csproj"
             },
-            "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\TalkClass.Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\TalkClass.Infrastructure.csproj"
+            "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj": {
+              "projectPath": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj"
+            },
+            "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj": {
+              "projectPath": "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj"
             }
           }
         }
@@ -3256,7 +3244,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

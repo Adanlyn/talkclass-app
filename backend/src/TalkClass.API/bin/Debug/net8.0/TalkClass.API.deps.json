@@ -17,6 +17,7 @@
           "Microsoft.EntityFrameworkCore.Tools": "8.0.8",
           "Swashbuckle.AspNetCore": "6.6.2",
           "TalkClass.Application": "1.0.0",
+          "TalkClass.Domain": "1.0.0",
           "TalkClass.Infrastructure": "1.0.0"
         },
         "runtime": {

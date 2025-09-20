@@ -1,7 +1,6 @@
-// backend/src/TalkClass.Application/Feedbacks/Dtos/CreateFeedbackDto.cs
 using System;
 using System.Collections.Generic;
-using TalkClass.Domain.Enums;
+using TalkClass.Domain.ValueObjects; 
 
 namespace TalkClass.Application.Feedbacks.Dtos
 {

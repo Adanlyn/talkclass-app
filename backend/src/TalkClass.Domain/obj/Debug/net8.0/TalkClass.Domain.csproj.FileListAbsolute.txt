@@ -9,15 +9,3 @@
 /workspace/src/TalkClass.Domain/obj/Debug/net8.0/refint/TalkClass.Domain.dll
 /workspace/src/TalkClass.Domain/obj/Debug/net8.0/TalkClass.Domain.pdb
 /workspace/src/TalkClass.Domain/obj/Debug/net8.0/ref/TalkClass.Domain.dll
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\bin\Debug\net8.0\TalkClass.Domain.deps.json
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\bin\Debug\net8.0\TalkClass.Domain.dll
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\bin\Debug\net8.0\TalkClass.Domain.pdb
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\obj\Debug\net8.0\TalkClass.Domain.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\obj\Debug\net8.0\TalkClass.Domain.AssemblyInfoInputs.cache
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\obj\Debug\net8.0\TalkClass.Domain.AssemblyInfo.cs
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\obj\Debug\net8.0\TalkClass.Domain.csproj.CoreCompileInputs.cache
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\obj\Debug\net8.0\TalkClass.Domain.sourcelink.json
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\obj\Debug\net8.0\TalkClass.Domain.dll
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\obj\Debug\net8.0\refint\TalkClass.Domain.dll
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\obj\Debug\net8.0\TalkClass.Domain.pdb
-C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Domain\obj\Debug\net8.0\ref\TalkClass.Domain.dll

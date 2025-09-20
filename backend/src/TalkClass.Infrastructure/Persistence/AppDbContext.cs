@@ -11,30 +11,30 @@ public class AppDbContext : DbContext, IAppDbContext
 
     public DbSet<Categoria> Categorias => Set<Categoria>();
     public DbSet<Pergunta> Perguntas => Set<Pergunta>();
+    public DbSet<PerguntaOpcao> PerguntaOpcoes => Set<PerguntaOpcao>();   // << NOVO DbSet
     public DbSet<Feedback> Feedbacks => Set<Feedback>();
     public DbSet<FeedbackResposta> FeedbackRespostas => Set<FeedbackResposta>();
-
     public DbSet<Administrador> Administradores => Set<Administrador>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Aplica todas as IEntityTypeConfiguration<> deste assembly
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-        // Conversão do ValueObject CPF <-> coluna string
+        // ValueObject CPF
         modelBuilder.Entity<Administrador>()
             .Property(a => a.Cpf)
-            .HasConversion(
-                v => v.Value,
-                v => new Cpf(v)
-            );
+            .HasConversion(v => v.Value, v => new Cpf(v));
 
         // Categoria
         modelBuilder.Entity<Categoria>(e =>
         {
             e.ToTable("categorias");
             e.HasKey(x => x.Id);
+
             e.Property(x => x.Nome).HasMaxLength(120).IsRequired();
+            e.Property(x => x.Descricao).HasMaxLength(500);
+            e.Property(x => x.Ordem).HasDefaultValue(0);
+            e.Property(x => x.Ativa).HasDefaultValue(true);
 
             e.HasMany(x => x.Perguntas)
              .WithOne(p => p.Categoria)
@@ -47,7 +47,25 @@ public class AppDbContext : DbContext, IAppDbContext
         {
             e.ToTable("perguntas");
             e.HasKey(x => x.Id);
-            e.Property(x => x.Enunciado).HasMaxLength(300).IsRequired();
+
+            e.Property(x => x.Enunciado).HasMaxLength(500).IsRequired();
+            e.Property(x => x.Tipo).HasConversion<int>().IsRequired();
+            e.Property(x => x.Obrigatoria).HasDefaultValue(true);
+            e.Property(x => x.Ordem).HasDefaultValue(0);
+            e.Property(x => x.Ativa).HasDefaultValue(true);
+
+            e.HasMany(x => x.Opcoes)
+             .WithOne(o => o.Pergunta)
+             .HasForeignKey(o => o.PerguntaId)
+             .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // PerguntaOpcao
+        modelBuilder.Entity<PerguntaOpcao>(e =>
+        {
+            e.ToTable("pergunta_opcoes");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Texto).HasMaxLength(200).IsRequired();
         });
 
         // Feedback
@@ -73,15 +91,14 @@ public class AppDbContext : DbContext, IAppDbContext
             e.ToTable("feedback_respostas");
             e.HasKey(x => x.Id);
 
+            e.Property(x => x.Tipo).HasConversion<int>().IsRequired();
+
             e.HasOne(x => x.Pergunta)
-             .WithMany()
+             .WithMany(p => p.Respostas)
              .HasForeignKey(x => x.PerguntaId)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
         base.OnModelCreating(modelBuilder);
     }
-
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        => base.SaveChangesAsync(cancellationToken);
 }

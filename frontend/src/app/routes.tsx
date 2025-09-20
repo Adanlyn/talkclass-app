@@ -11,6 +11,7 @@ import AdminFeedbacks from '../pages/AdminFeedbacks';
 import AdminUsers from '../pages/AdminUsers';
 import ProtectedRoute from '../routes/ProtectedRoute';
 
+
 export const router = createBrowserRouter([
   { path: '/', element: <Home /> },
   { path: '/feedback', element: <Feedback /> },
@@ -24,4 +25,6 @@ export const router = createBrowserRouter([
   { path: '/admin/categorias', element: <ProtectedRoute><AdminCategories /></ProtectedRoute> },
   { path: '/admin/feedbacks', element: <ProtectedRoute><AdminFeedbacks /></ProtectedRoute> },
   { path: '/admin/usuarios', element: <ProtectedRoute><AdminUsers /></ProtectedRoute> },
+
+
 ]);

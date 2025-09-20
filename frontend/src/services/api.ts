@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { getToken, isLoggedIn, logoutAndReload } from '../utils/auth';
 
-const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:5252').replace(/\/$/, '');
+const base = (import.meta.env.VITE_API_URL ?? 'http://localhost:5252').replace(/\/+$/, '');
 
-const api = axios.create({
-  baseURL: `${baseURL}/api`,
+export const api = axios.create({
+  baseURL: `${base}/api`,        // <<< coloca um /api só aqui
+  headers: { 'Content-Type': 'application/json' },
   withCredentials: false,
 });
 
