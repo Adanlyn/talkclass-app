@@ -13,3 +13,6 @@
 /workspace/src/TalkClass.Application/obj/Debug/net8.0/refint/TalkClass.Application.dll
 /workspace/src/TalkClass.Application/obj/Debug/net8.0/TalkClass.Application.pdb
 /workspace/src/TalkClass.Application/obj/Debug/net8.0/ref/TalkClass.Application.dll
+C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Application\obj\Debug\net8.0\TalkClass.Application.dll
+C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Application\obj\Debug\net8.0\refint\TalkClass.Application.dll
+C:\Users\solli\Documents\talkclass-app\backend\src\TalkClass.Application\obj\Debug\net8.0\TalkClass.Application.pdb

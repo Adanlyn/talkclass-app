@@ -15,3 +15,6 @@
 /workspace/src/TalkClass.Infrastructure/obj/Debug/net8.0/refint/TalkClass.Infrastructure.dll
 /workspace/src/TalkClass.Infrastructure/obj/Debug/net8.0/TalkClass.Infrastructure.pdb
 /workspace/src/TalkClass.Infrastructure/obj/Debug/net8.0/ref/TalkClass.Infrastructure.dll
+C:/Users/solli/Documents/talkclass-app/backend/src/TalkClass.Infrastructure/obj/Debug/net8.0/TalkClass.Infrastructure.dll
+C:/Users/solli/Documents/talkclass-app/backend/src/TalkClass.Infrastructure/obj/Debug/net8.0/refint/TalkClass.Infrastructure.dll
+C:/Users/solli/Documents/talkclass-app/backend/src/TalkClass.Infrastructure/obj/Debug/net8.0/TalkClass.Infrastructure.pdb

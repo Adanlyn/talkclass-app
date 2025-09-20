@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "g8+hpdC63ms=",
+  "dgSpecHash": "+Cj0ykA8qcU=",
   "success": true,
   "projectFilePath": "/workspace/src/TalkClass.API/TalkClass.API.csproj",
   "expectedPackageFiles": [
     "/root/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/root/.nuget/packages/fluentvalidation/12.0.0/fluentvalidation.12.0.0.nupkg.sha512",
+    "/root/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.0.0/fluentvalidation.dependencyinjectionextensions.12.0.0.nupkg.sha512",
     "/root/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/root/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/8.0.8/microsoft.aspnetcore.authentication.jwtbearer.8.0.8.nupkg.sha512",
     "/root/.nuget/packages/microsoft.aspnetcore.openapi/8.0.19/microsoft.aspnetcore.openapi.8.0.19.nupkg.sha512",

@@ -1283,6 +1283,7 @@
     "net8.0": [
       "BCrypt.Net-Next >= 4.0.3",
       "Microsoft.EntityFrameworkCore >= 8.0.8",
+      "Microsoft.EntityFrameworkCore.Analyzers >= 8.0.8",
       "Microsoft.EntityFrameworkCore.Relational >= 8.0.8",
       "Microsoft.Extensions.Configuration >= 9.0.8",
       "Microsoft.Extensions.Configuration.EnvironmentVariables >= 9.0.8",
@@ -1348,6 +1349,10 @@
             "version": "[4.0.3, )"
           },
           "Microsoft.EntityFrameworkCore": {
+            "target": "Package",
+            "version": "[8.0.8, )"
+          },
+          "Microsoft.EntityFrameworkCore.Analyzers": {
             "target": "Package",
             "version": "[8.0.8, )"
           },

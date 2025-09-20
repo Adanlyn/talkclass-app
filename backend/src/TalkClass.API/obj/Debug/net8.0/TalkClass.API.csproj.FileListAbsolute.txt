@@ -132,3 +132,7 @@
 /workspace/src/TalkClass.API/obj/Debug/net8.0/TalkClass.API.pdb
 /workspace/src/TalkClass.API/obj/Debug/net8.0/TalkClass.API.genruntimeconfig.cache
 /workspace/src/TalkClass.API/obj/Debug/net8.0/ref/TalkClass.API.dll
+/workspace/src/TalkClass.API/bin/Debug/net8.0/FluentValidation.DependencyInjectionExtensions.dll
+C:/Users/solli/Documents/talkclass-app/backend/src/TalkClass.API/obj/Debug/net8.0/TalkClass.API.dll
+C:/Users/solli/Documents/talkclass-app/backend/src/TalkClass.API/obj/Debug/net8.0/refint/TalkClass.API.dll
+C:/Users/solli/Documents/talkclass-app/backend/src/TalkClass.API/obj/Debug/net8.0/TalkClass.API.pdb
