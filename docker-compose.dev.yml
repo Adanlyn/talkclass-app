@@ -36,7 +36,7 @@ services:
       Jwt__Issuer: TalkClass
       Jwt__Audience: TalkClass.Frontend
       Jwt__Key: "kKc4Hn9M2RzQ8sW1tV5yL0pB7fD3jE6aP9xY2uT4mN8qR5sC1vG7hJ0kL3wZ6bD"
-      Jwt__ExpiresMinutes: 3
+      Jwt__ExpiresMinutes: 40
     ports: ["5252:5252"]
     depends_on:
       db:

@@ -77,4 +77,6 @@ app.MapAuthEndpoints();   // POST /api/auth/login
 app.MapUserEndpoints();   // GET  /api/user/me (protegido)
 app.MapFeedbackEndpoints();
 
+app.MapCategoryEndpoints();
+
 app.Run();

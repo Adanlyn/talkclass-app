@@ -1,4 +1,9 @@
 // src/services/notifications.ts
+import { notifications } from '@mantine/notifications';
+import { IconCheck, IconX } from '@tabler/icons-react';
+import { createElement } from 'react';
+
+
 export type NotificationItem = {
   id: string;
   title: string;
@@ -8,11 +13,29 @@ export type NotificationItem = {
   severity?: 'info' | 'warning' | 'error';
 };
 
+export const notifySuccess = (msg: string) =>
+  notifications.show({
+    message: msg,
+    color: 'green',
+    icon: createElement(IconCheck),
+    autoClose: 10000,
+  });
+
+export const notifyError = (msg: string) =>
+  notifications.show({
+    message: msg,
+    color: 'red',
+    icon: createElement(IconX),
+    autoClose: 10000,
+  });
+  
 const KEY = 'tc.notifications';
 
 function uid() {
   return Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
+
+
 
 export function loadNotifications(): NotificationItem[] {
   try {
