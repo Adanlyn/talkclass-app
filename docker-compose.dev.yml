@@ -54,6 +54,9 @@ services:
     environment:
       # o app roda no navegador do host → localhost:5252 está correto
       VITE_API_URL: http://localhost:5252
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_INTERVAL: "200"
     ports: ["5174:5174"]
     depends_on: [api]
     volumes:

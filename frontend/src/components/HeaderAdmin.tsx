@@ -22,9 +22,11 @@ import { useNotifications } from '../state/notifications';
 import NotificationsMenu from './NotificationsMenu';
 import NotificationsCenterModal from './NotificationsCenterModal';
 import classes from './HeaderAdmin.module.css';
+import { AdminTitleContext } from './Layout/AdminTitleContext';
+
 
 type Props = {
-  title: string;
+  title?: string;
   initials?: string;
   onLogout?: () => void;
   onProfile?: () => void;

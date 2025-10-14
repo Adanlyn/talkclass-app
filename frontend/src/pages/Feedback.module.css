@@ -1,6 +1,10 @@
 :root {
   --tab-bg: #e8d8cc;                            /* abas normais */
   --tab-bg-active: var(--mantine-color-sand-3); /* MESMA cor do formulário (aba ativa) */
+    --arrow-color: #f97316;     /* cor padrão (laranja) */
+  --arrow-hover: #ff8a3d;     /* hover */
+  --arrow-disabled: 0.35;      /* opacidade quando desabilitado */
+  --arrow-bg: rgba(0, 0, 0, 0.12); /* fundo do círculo */
 }
 .footer { background: #2b231f; padding: 12px 0; color: #e8dbd2; text-align: center; }
 
@@ -37,6 +41,11 @@
   pointer-events: none;
   z-index: 1;
 }
+.tabText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;/* quebra palavras grandes */
+}
 .tabsBar::before {
   content: '';
   position: absolute;
@@ -50,13 +59,15 @@
 
 .tabsScroll {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-wrap: nowrap;  /* 1 linha */
+  justify-content: flex-start;
   align-items: flex-end;
-  gap: 12px;
-  margin: 0 auto;
-  padding: 0;
+  gap: 8px;
+  overflow: hidden;   /* esconde o que passa */
+  flex: 1 1 auto;     /* ocupa o espaço entre as setas */
   max-width: 100%;
+  margin: 0 auto;
+  padding: 0;  
 }
 .tabsScroll::-webkit-scrollbar { display: none; }
 
@@ -68,16 +79,19 @@
   border-bottom: none;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  padding: 10px 16px;
-  min-height: 40px;
+  padding: 10px 12px;
+  min-height: 52px;
   font-weight: 700;
   font-size: clamp(12px, 1.25vw, 14px);
-  white-space: nowrap;
   cursor: pointer;
   position: relative;
   margin: 0;
   transition: background .15s ease, box-shadow .15s ease, transform .1s ease;
   box-shadow: none;
+  display: flex;          /* centraliza o texto no botão */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 .tab:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0,0,0,.12); }
 
@@ -166,6 +180,8 @@
     box-shadow: none;
   }
 
+    .arrowBtn { display: none; }
+
   .formWrap { max-width: 100%; }
 
   /* Rádios empilhados no mobile */
@@ -178,4 +194,46 @@
     flex: 0 0 auto;
     width: auto;
   }
+}
+
+/* ===== SETAS ===== */
+.arrowBtn {
+   font-size: 30px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+
+  display: grid;
+  place-items: center;
+
+  border: none;
+  border-radius: 999px;
+
+  color: var(--arrow-color);
+  background: var(--arrow-bg);
+  backdrop-filter: blur(2px);
+  cursor: pointer;
+
+  transition: color .15s ease, transform .15s ease, background .15s ease;
+}
+
+.arrowBtn:hover:not(:disabled) { transform: scale(1.06); }
+.arrowBtn:disabled { opacity: var(--arrow-disabled); cursor: not-allowed; }
+.arrowBtn:focus-visible { outline: 2px solid var(--arrow-color); outline-offset: 2px; }
+
+
+/* tamanho e estilo do ícone (quando usa caractere ‹ ›) */
+.arrowIcon {
+  font-size: 22px;       /* tamanho do glifo */
+  line-height: 1;
+  user-select: none;
+}
+
+/* (Opcional) tema escuro claro */
+.dark .arrowBtn { background: rgba(255,255,255,.12); }
+
+.tabsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }

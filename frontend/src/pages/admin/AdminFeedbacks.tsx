@@ -1,6 +1,6 @@
 import { Button, Container, Group, Paper, Table, Text, Title } from '@mantine/core';
 import { Link } from 'react-router-dom';
-import HeaderAdmin from '../components/HeaderAdmin';
+import HeaderAdmin from '../../components/HeaderAdmin';
 import classes from './Admin.module.css';
 
 export default function AdminFeedbacks() {

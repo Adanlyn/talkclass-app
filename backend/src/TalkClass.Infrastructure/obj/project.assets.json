@@ -120,12 +120,12 @@
         },
         "compile": {
           "lib/netcoreapp3.1/_._": {
-            "related": ".pdb;.xml"
+            "related": ".pdb"
           }
         },
         "runtime": {
           "lib/netcoreapp3.1/Microsoft.CodeAnalysis.CSharp.dll": {
-            "related": ".pdb;.xml"
+            "related": ".pdb"
           }
         },
         "resource": {
@@ -242,12 +242,12 @@
         },
         "compile": {
           "lib/netcoreapp3.1/_._": {
-            "related": ".pdb"
+            "related": ".pdb;.xml"
           }
         },
         "runtime": {
           "lib/netcoreapp3.1/Microsoft.CodeAnalysis.Workspaces.dll": {
-            "related": ".pdb"
+            "related": ".pdb;.xml"
           }
         },
         "resource": {
@@ -533,14 +533,10 @@
           "System.Text.Json": "8.0.4"
         },
         "compile": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
+          "lib/net8.0/_._": {}
         },
         "runtime": {
-          "lib/net8.0/Microsoft.Extensions.DependencyModel.dll": {
-            "related": ".xml"
-          }
+          "lib/net8.0/Microsoft.Extensions.DependencyModel.dll": {}
         },
         "build": {
           "buildTransitive/net6.0/_._": {}
@@ -920,10 +916,14 @@
           "System.Collections.Immutable": "6.0.0"
         },
         "compile": {
-          "lib/net6.0/_._": {}
+          "lib/net6.0/_._": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net6.0/System.Reflection.Metadata.dll": {}
+          "lib/net6.0/System.Reflection.Metadata.dll": {
+            "related": ".xml"
+          }
         },
         "build": {
           "buildTransitive/netcoreapp3.1/_._": {}
@@ -932,10 +932,14 @@
       "System.Runtime.CompilerServices.Unsafe/6.0.0": {
         "type": "package",
         "compile": {
-          "lib/net6.0/_._": {}
+          "lib/net6.0/_._": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net6.0/System.Runtime.CompilerServices.Unsafe.dll": {}
+          "lib/net6.0/System.Runtime.CompilerServices.Unsafe.dll": {
+            "related": ".xml"
+          }
         },
         "build": {
           "buildTransitive/netcoreapp3.1/_._": {}
@@ -2777,19 +2781,19 @@
     ]
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "C:\\Users\\solli\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj",
+      "projectUniqueName": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\TalkClass.Infrastructure.csproj",
       "projectName": "TalkClass.Infrastructure",
-      "projectPath": "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/workspace/src/TalkClass.Infrastructure/obj/",
+      "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\TalkClass.Infrastructure.csproj",
+      "packagesPath": "C:\\Users\\solli\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\solli\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -2801,11 +2805,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/workspace/src/TalkClass.Application/TalkClass.Application.csproj": {
-              "projectPath": "/workspace/src/TalkClass.Application/TalkClass.Application.csproj"
+            "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj": {
+              "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj"
             },
-            "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj": {
-              "projectPath": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj"
+            "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj": {
+              "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj"
             }
           }
         }
@@ -2888,7 +2892,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

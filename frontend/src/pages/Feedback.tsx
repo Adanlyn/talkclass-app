@@ -11,11 +11,14 @@ import {
   Text,
   Textarea,
   Title,
+  ActionIcon
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Header from '../components/Header';
 import classes from './Feedback.module.css';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+
 
 import {
   getCategorias,
@@ -77,13 +80,13 @@ export default function Feedback() {
   const [carregandoPerguntas, setCarregandoPerguntas] = useState(false);
 
   // Scroll suave nas abas (setinhas para overflow)
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-  const scrollTabs = (dir: 'left' | 'right') => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const delta = dir === 'left' ? -240 : 240;
-    el.scrollBy({ left: delta, behavior: 'smooth' });
-  };
+  const pageSize = 9;
+  const [catPage, setCatPage] = useState(0);
+  const totalCatPages = Math.max(1, Math.ceil(categorias.length / pageSize));
+  const viewCats = useMemo(() => {
+    const start = catPage * pageSize;
+    return categorias.slice(start, start + pageSize);
+  }, [categorias, catPage]);
 
   const form = useForm<DynamicFormValues>({ initialValues: { cursoTurma: '' } });
 
@@ -93,6 +96,7 @@ export default function Feedback() {
       const cats = await getCategorias();
       setCategorias(cats);
       if (cats.length > 0) setCategoriaAtivaId(cats[0].id);
+      setCatPage(0);
     })();
   }, []);
 
@@ -139,8 +143,8 @@ export default function Feedback() {
               ? raw === 'sim'
                 ? true
                 : raw === 'nao'
-                ? false
-                : null
+                  ? false
+                  : null
               : null,
           valorOpcao:
             p.tipo === TipoAvaliacao.Multipla ? (String(raw ?? '') || null) : null,
@@ -185,62 +189,65 @@ export default function Feedback() {
         {/* ABAS — visual intacto (agora vindas do banco) */}
         <div className={classes.tabsBar}>
           <Container size="lg">
-            <div style={{ position: 'relative' }}>
-              <button
-                type="button"
-                aria-label="rolar para a esquerda"
-                onClick={() => scrollTabs('left')}
-                style={{
-                  position: 'absolute',
-                  left: -8,
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: 18,
-                  color: '#2b231f',
-                }}
-              >
-                ‹
-              </button>
+            <div className={classes.tabsRow}>
+              {/* seta ESQ */}
+              {totalCatPages > 1 && (
+                <button
+                  type="button"
+                  aria-label="Anterior"
+                  className={classes.arrowBtn}
+                  onClick={() => setCatPage((p) => Math.max(0, p - 1))}
+                  disabled={catPage === 0}
+                  title="Anterior"
+                >
+                  <span className={classes.arrowIcon}>‹</span>
+                </button>
+              )}
 
-              <div ref={scrollRef} className={classes.tabsScroll}>
-                {categorias.map((cat) => (
-                  <button
-                    key={cat.id}
-                    className={`${classes.tab} ${
-                      categoriaAtivaId === cat.id ? classes.tabActive : ''
-                    }`}
-                    onClick={() => setCategoriaAtivaId(cat.id)}
-                    type="button"
-                  >
-                    {cat.nome}
-                  </button>
-                ))}
+              {/* faixa: 1 linha, ocupa o centro */}
+              <div className={classes.tabsScroll}>
+                {viewCats.map((cat) => {
+                  // largura base p/ 9 itens com gap 8px
+                  const GAP_PX = 8;
+                  const base = `calc((100% - ${GAP_PX * (pageSize - 1)}px) / ${pageSize})`;
+
+                  const len = (cat.nome ?? '').length;
+                  const extraPx = len > 15 ? Math.min(80, (len - 15) * 6) : 0;
+                  const flex = extraPx ? `0 0 calc(${base} + ${extraPx}px)` : `0 0 ${base}`;
+
+                  return (
+                    <button
+                      key={cat.id}
+                      className={`${classes.tab} ${categoriaAtivaId === cat.id ? classes.tabActive : ''}`}
+                      onClick={() => setCategoriaAtivaId(cat.id)}
+                      type="button"
+                      title={cat.nome}
+                      style={{ flex }}
+                    >
+                      <span className={classes.tabText}>{cat.nome}</span>
+                    </button>
+                  );
+                })}
               </div>
 
-              <button
-                type="button"
-                aria-label="rolar para a direita"
-                onClick={() => scrollTabs('right')}
-                style={{
-                  position: 'absolute',
-                  right: -8,
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: 18,
-                  color: '#2b231f',
-                }}
-              >
-                ›
-              </button>
+              {/* seta DIR */}
+              {totalCatPages > 1 && (
+                <button
+                  type="button"
+                  aria-label="Próximo"
+                  className={classes.arrowBtn}
+                  onClick={() => setCatPage((p) => Math.min(totalCatPages - 1, p + 1))}
+                  disabled={catPage >= totalCatPages - 1}
+                  title="Próximo"
+                >
+                  <span className={classes.arrowIcon}>›</span>
+                </button>
+              )}
             </div>
+
           </Container>
         </div>
+
 
         {/* FORM — mesma estrutura visual; perguntas dinâmicas */}
         <section className={classes.formSection}>
