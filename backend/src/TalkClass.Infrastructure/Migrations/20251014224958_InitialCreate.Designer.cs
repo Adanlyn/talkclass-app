@@ -5,14 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using TalkClass.Infrastructure.Persistence;
 
 #nullable disable
 
 namespace TalkClass.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250912231827_InitialCreate")]
+    [Migration("20251014224958_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -196,7 +195,11 @@ namespace TalkClass.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoriaId");
+                    b.HasIndex("Ordem");
+
+                    b.HasIndex("Tipo");
+
+                    b.HasIndex("CategoriaId", "Ativa");
 
                     b.ToTable("perguntas", (string)null);
                 });
@@ -260,7 +263,7 @@ namespace TalkClass.Infrastructure.Migrations
                     b.HasOne("TalkClass.Domain.Entities.Categoria", "Categoria")
                         .WithMany("Perguntas")
                         .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Categoria");

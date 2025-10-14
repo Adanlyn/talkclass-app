@@ -9,6 +9,8 @@ using TalkClass.Infrastructure.Persistence;
 using TalkClass.Application.Autenticacao.Dtos;
 using TalkClass.Application.Autenticacao.Handlers;
 using TalkClass.Infrastructure.Auth;
+using System.Text.Json.Serialization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +66,11 @@ builder.Services.AddSingleton<IPasswordHasher, PasswordHasherBcrypt>();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 
+builder.Services.ConfigureHttpJsonOptions(opts =>
+{
+    opts.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
 var app = builder.Build();
 
 app.UseCors();
@@ -78,5 +85,7 @@ app.MapUserEndpoints();   // GET  /api/user/me (protegido)
 app.MapFeedbackEndpoints();
 
 app.MapCategoryEndpoints();
+
+app.MapQuestionsEndpoints();
 
 app.Run();

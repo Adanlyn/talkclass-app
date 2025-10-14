@@ -3,7 +3,7 @@ using TalkClass.Application.Common.Interfaces;
 using TalkClass.Domain.Entities;
 using TalkClass.Domain.ValueObjects;
 
-namespace TalkClass.Infrastructure.Persistence;
+
 
 public class AppDbContext : DbContext, IAppDbContext
 {
@@ -39,7 +39,7 @@ public class AppDbContext : DbContext, IAppDbContext
             e.HasMany(x => x.Perguntas)
              .WithOne(p => p.Categoria)
              .HasForeignKey(p => p.CategoriaId)
-             .OnDelete(DeleteBehavior.Cascade);
+             .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Pergunta

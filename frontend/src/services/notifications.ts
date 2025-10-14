@@ -3,7 +3,6 @@ import { notifications } from '@mantine/notifications';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { createElement } from 'react';
 
-
 export type NotificationItem = {
   id: string;
   title: string;
@@ -13,29 +12,49 @@ export type NotificationItem = {
   severity?: 'info' | 'warning' | 'error';
 };
 
+// ---------- helpers para extrair mensagem de erro ----------
+function extractMsg(err: unknown): string {
+  // AxiosError?
+  const anyErr = err as any;
+  const data = anyErr?.response?.data;
+
+  if (typeof data === 'string' && data.trim()) return data;              // backend retornou string
+  if (data?.message && typeof data.message === 'string') return data.message; // backend retornou { message }
+  if (Array.isArray(data) && data.length) {
+    const first = data[0];
+    if (typeof first === 'string') return first;
+    if (first?.description) return String(first.description);
+    if (first?.error) return String(first.error);
+  }
+
+  // fallback
+  if (anyErr?.message) return String(anyErr.message);
+  return 'Ocorreu um erro. Tente novamente.';
+}
+// -----------------------------------------------------------
+
 export const notifySuccess = (msg: string) =>
   notifications.show({
     message: msg,
     color: 'green',
     icon: createElement(IconCheck),
-    autoClose: 10000,
+    autoClose: 4000,
   });
 
-export const notifyError = (msg: string) =>
+// agora aceita qualquer coisa (string, Error, AxiosError, etc.)
+export const notifyError = (err: unknown) =>
   notifications.show({
-    message: msg,
+    message: extractMsg(err),
     color: 'red',
     icon: createElement(IconX),
-    autoClose: 10000,
+    autoClose: 6000,
   });
-  
+
 const KEY = 'tc.notifications';
 
 function uid() {
   return Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
-
-
 
 export function loadNotifications(): NotificationItem[] {
   try {
@@ -64,7 +83,7 @@ export function addNotification(partial: Omit<NotificationItem, 'id' | 'createdA
 }
 
 export function removeNotification(id: string) {
-  const next = loadNotifications().filter(n => n.id !== id);
+  const next = loadNotifications().filter((n) => n.id !== id);
   saveNotifications(next);
 }
 
@@ -73,12 +92,12 @@ export function clearAllNotifications() {
 }
 
 export function markAllRead() {
-  const next = loadNotifications().map(n => ({ ...n, read: true }));
+  const next = loadNotifications().map((n) => ({ ...n, read: true }));
   saveNotifications(next);
 }
 
 export function unreadCount() {
-  return loadNotifications().filter(n => !n.read).length;
+  return loadNotifications().filter((n) => !n.read).length;
 }
 
 // Preenche exemplos na 1ª carga (útil no TCC)

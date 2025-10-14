@@ -35,3 +35,5 @@ C:/Users/solli/Documents/talkclass-app/backend/src/TalkClass.Infrastructure/obj/
 C:/Users/solli/Documents/talkclass-app/backend/src/TalkClass.Infrastructure/obj/Debug/net8.0/ref/TalkClass.Infrastructure.dll
 /workspace/src/TalkClass.Infrastructure/bin/Debug/net8.0/TalkClass.Infrastructure.runtimeconfig.json
 /workspace/src/TalkClass.Infrastructure/obj/Debug/net8.0/TalkClass.Infrastructure.genruntimeconfig.cache
+C:/Users/solli/Documents/talkclass-app/backend/src/TalkClass.Infrastructure/bin/Debug/net8.0/TalkClass.Infrastructure.runtimeconfig.json
+C:/Users/solli/Documents/talkclass-app/backend/src/TalkClass.Infrastructure/obj/Debug/net8.0/TalkClass.Infrastructure.genruntimeconfig.cache

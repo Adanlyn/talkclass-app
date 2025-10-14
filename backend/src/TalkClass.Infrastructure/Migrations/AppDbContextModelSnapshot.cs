@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using TalkClass.Infrastructure.Persistence;
 
 #nullable disable
 
@@ -193,7 +192,11 @@ namespace TalkClass.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoriaId");
+                    b.HasIndex("Ordem");
+
+                    b.HasIndex("Tipo");
+
+                    b.HasIndex("CategoriaId", "Ativa");
 
                     b.ToTable("perguntas", (string)null);
                 });
@@ -257,7 +260,7 @@ namespace TalkClass.Infrastructure.Migrations
                     b.HasOne("TalkClass.Domain.Entities.Categoria", "Categoria")
                         .WithMany("Perguntas")
                         .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Categoria");
