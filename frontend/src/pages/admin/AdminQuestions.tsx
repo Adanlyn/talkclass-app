@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import {
   ActionIcon, Button, Group, Modal, Paper, Select, Stack, Switch, Table, Text,
   TextInput, Title, rem, Pagination, NumberInput
 } from '@mantine/core';
+import { useSearchParams } from 'react-router-dom';
 import { IconEdit, IconTrash, IconX } from '@tabler/icons-react';
 import { useAdminTitle } from '../../components/Layout/AdminTitleContext';
 import classes from '../../pages/admin/Admin.module.css';
@@ -15,28 +16,40 @@ import type { Pergunta, TipoAvaliacao, PerguntaOpcao } from '../../services/ques
 import { notifyError, notifySuccess } from '../../services/notifications';
 import OptionEditor from '../../components/OptionEditor';
 
+
 const TYPES: { value: TipoAvaliacao; label: string; needsOptions?: boolean }[] = [
-  { value: 'Nota',      label: 'Nota (1–5)' },
-  { value: 'SimNao',    label: 'Sim/Não', needsOptions: true },
-  { value: 'Multipla',  label: 'Múltipla escolha', needsOptions: true },
-  { value: 'Texto',     label: 'Texto (resposta aberta)' },
+  { value: 'Nota', label: 'Nota (1–5)' },
+  { value: 'SimNao', label: 'Sim/Não', needsOptions: true },
+  { value: 'Multipla', label: 'Múltipla escolha', needsOptions: true },
+  { value: 'Texto', label: 'Texto (resposta aberta)' },
 ];
 
 export default function Perguntas() {
   useAdminTitle('Perguntas');
 
+  const [sp] = useSearchParams();
+const categoriaFromUrl = sp.get('categoriaId');
+
+const [fCategoria, setFCategoria] = useState<string | null>(categoriaFromUrl);
+const [categoriaId, setCategoriaId] = useState<string | null>(categoriaFromUrl);
+const [fTipo, setFTipo] = useState<TipoAvaliacao | null>(null);
+
+
+useEffect(() => {
+  setFCategoria(categoriaFromUrl);
+  setCategoriaId(categoriaFromUrl);
+}, [categoriaFromUrl]);
+
   // filtros
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState('');
-  const [fCategoria, setFCategoria] = useState<string | null>(null);
-  const [fTipo, setFTipo] = useState<TipoAvaliacao | null>(null);
+  
 
   // form
   const [editId, setEditId] = useState<string | null>(null);
   const [enunciado, setEnunciado] = useState('');
   const [tipo, setTipo] = useState<TipoAvaliacao>('Texto');
-  const [categoriaId, setCategoriaId] = useState<string | null>(null);
   const [obrigatoria, setObrigatoria] = useState(true);
   const [ordem, setOrdem] = useState<number>(0);
   const [opcoes, setOpcoes] = useState<PerguntaOpcao[]>([]);
@@ -101,10 +114,10 @@ export default function Perguntas() {
       tipo, obrigatoria, ordem,
       opcoes: needsOptions ? opcoes.filter(o => o.texto.trim() !== '') : undefined,
     };
-    if (!payload.enunciado) { notifications.show({ color: 'red', icon: <IconX/>, message: 'Informe o enunciado.' }); return; }
-    if (!payload.categoriaId) { notifications.show({ color: 'red', icon: <IconX/>, message: 'Selecione uma categoria.' }); return; }
+    if (!payload.enunciado) { notifications.show({ color: 'red', icon: <IconX />, message: 'Informe o enunciado.' }); return; }
+    if (!payload.categoriaId) { notifications.show({ color: 'red', icon: <IconX />, message: 'Selecione uma categoria.' }); return; }
     if (needsOptions && (!payload.opcoes || payload.opcoes.length < 2)) {
-      notifications.show({ color: 'red', icon: <IconX/>, message: 'Informe ao menos 2 opções.' }); return;
+      notifications.show({ color: 'red', icon: <IconX />, message: 'Informe ao menos 2 opções.' }); return;
     }
     editId ? mUpdate.mutate({ id: editId, payload }) : mCreate.mutate(payload);
   }
@@ -143,7 +156,7 @@ export default function Perguntas() {
               <Select placeholder="Filtrar por categoria" data={catOptions} value={fCategoria} onChange={(v) => { setPage(1); setFCategoria(v); }} clearable w={240} />
               <Select placeholder="Filtrar por tipo" data={TYPES.map(t => ({ value: t.value, label: t.label }))} value={fTipo} onChange={(v) => { setPage(1); setFTipo((v as TipoAvaliacao) ?? null); }} clearable w={220} />
             </Group>
-            <Select w={120} data={['5','10','20','50','100']} value={String(pageSize)} onChange={(v) => { const n = Number(v ?? 10); setPage(1); setPageSize(n); }} label="Itens/pág." allowDeselect={false} />
+            <Select w={120} data={['5', '10', '20', '50', '100']} value={String(pageSize)} onChange={(v) => { const n = Number(v ?? 10); setPage(1); setPageSize(n); }} label="Itens/pág." allowDeselect={false} />
           </Group>
 
           <Table striped withColumnBorders highlightOnHover>

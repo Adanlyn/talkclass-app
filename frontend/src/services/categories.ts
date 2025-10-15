@@ -8,6 +8,7 @@ export type Category = {
   ordem: number;
   ativa: boolean;
   criadoEm: string;
+  perguntasCount?: number;
 };
 
 export type Paged<T> = {

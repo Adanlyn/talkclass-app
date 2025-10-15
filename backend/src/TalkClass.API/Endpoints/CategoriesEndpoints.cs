@@ -33,13 +33,15 @@ public static class CategoriesEndpoints
             var items = await q.OrderBy(c => c.Ordem).ThenBy(c => c.Nome)
                 .Skip((qp.page - 1) * qp.pageSize)
                 .Take(qp.pageSize)
-                .Select(c => new {
+                .Select(c => new
+                {
                     id = c.Id,
                     nome = c.Nome,
                     descricao = c.Descricao,
                     ordem = c.Ordem,
                     ativa = c.Ativa,
-                    criadoEm = c.CriadoEm
+                    criadoEm = c.CriadoEm,
+                    perguntasCount = c.Perguntas.Count()
                 })
                 .ToListAsync();
 
@@ -107,38 +109,44 @@ public static class CategoriesEndpoints
             await db.SaveChangesAsync();
             return Results.NoContent();
         });
-
-        // DELETE /api/categories/{id}
-        // DELETE /api/categories/{id}
-group.MapDelete("/{id:guid}", async (Guid id, AppDbContext db) =>
-{
-    var cat = await db.Categorias.FirstOrDefaultAsync(c => c.Id == id);
-    if (cat is null) return Results.NotFound();
-
-    db.Categorias.Remove(cat);
-
-    try
-    {
-        await db.SaveChangesAsync();
-        return Results.NoContent();
-    }
-    // 23503 = foreign_key_violation (FK em feedbacks)
-    catch (DbUpdateException ex) when (
-        ex.InnerException is Exception ie &&
-        ie.GetType().Name == "PostgresException" &&
-        ie.GetType().GetProperty("SqlState")?.GetValue(ie)?.ToString() == "23503"
-    )
-    {
-        return Results.Conflict(new
+        group.MapDelete("/{id:guid}", async (Guid id, AppDbContext db) =>
         {
-            message = "Não é possível excluir: a categoria possui vínculos (feedbacks). Inative-a ou remova/realoque os vínculos primeiro."
+            var cat = await db.Categorias.FirstOrDefaultAsync(c => c.Id == id);
+            if (cat is null) return Results.NotFound();
+
+            // NOVO: bloqueia se houver perguntas vinculadas
+            var hasPerguntas = await db.Perguntas.AnyAsync(p => p.CategoriaId == id);
+            if (hasPerguntas)
+                return Results.Conflict(new
+                {
+                    message = "Não é possível excluir: existem perguntas vinculadas a esta categoria. Inative-a ou remova/realoque as perguntas primeiro."
+                });
+
+            db.Categorias.Remove(cat);
+
+            try
+            {
+                await db.SaveChangesAsync();
+                return Results.NoContent();
+            }
+            // 23503 = foreign_key_violation (FK em feedbacks ou outras)
+            catch (DbUpdateException ex) when (
+                ex.InnerException is Exception ie &&
+                ie.GetType().Name == "PostgresException" &&
+                ie.GetType().GetProperty("SqlState")?.GetValue(ie)?.ToString() == "23503"
+            )
+            {
+                return Results.Conflict(new
+                {
+                    message = "Não é possível excluir: a categoria possui vínculos (ex.: feedbacks). Inative-a ou remova/realoque os vínculos primeiro."
+                });
+            }
+            catch
+            {
+                return Results.Problem("Erro ao excluir categoria.");
+            }
         });
-    }
-    catch
-    {
-        return Results.Problem("Erro ao excluir categoria.");
-    }
-});
+
         return app;
     }
 

@@ -15,12 +15,16 @@ import {
   TextInput,
   Title,
   rem,
+  Badge,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconEdit, IconTrash, IconX } from '@tabler/icons-react';
+import { IconEdit, IconTrash, IconX, IconListDetails  } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAdminTitle } from '../../components/Layout/AdminTitleContext';
 import classes from '../admin/Admin.module.css';
+import { Link } from 'react-router-dom';
+
+
 
 import {
   listCategories,
@@ -31,9 +35,11 @@ import {
 } from '../../services/categories';
 import type { Category } from '../../services/categories';
 import { notifySuccess, notifyError } from '../../services/notifications';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Categorias() {
-  useAdminTitle('Categorias');
+  const nav = useNavigate();
 
   // estado do form
   const [nome, setNome] = useState('');
@@ -166,7 +172,7 @@ export default function Categorias() {
             />
             <Select
               w={120}
-              data={['5','10','20','50','100']}
+              data={['5', '10', '20', '50', '100']}
               value={String(pageSize)}
               onChange={(v) => { const n = Number(v ?? 10); setPage(1); setPageSize(n); }}
               label="Itens/pág."
@@ -177,45 +183,84 @@ export default function Categorias() {
 
         <Table striped withColumnBorders highlightOnHover>
           <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Nome</Table.Th>
-              <Table.Th>Descrição</Table.Th>
-              <Table.Th style={{ width: rem(120) }}>Ativa</Table.Th>
-              <Table.Th style={{ width: rem(120) }}>Ações</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
+  <Table.Tr>
+    <Table.Th>Nome</Table.Th>
+    <Table.Th>Descrição</Table.Th>
+    <Table.Th style={{ width: rem(110), textAlign: 'center' }}>Perguntas</Table.Th>
+    <Table.Th style={{ width: rem(110), textAlign: 'center' }}>Ativa</Table.Th>
+    <Table.Th style={{ width: rem(140), textAlign: 'right' }}>Ações</Table.Th>
+  </Table.Tr>
+</Table.Thead>
           <Table.Tbody>
-            {items.map((c) => (
-              <Table.Tr key={c.id}>
-                <Table.Td>{c.nome}</Table.Td>
-                <Table.Td>{c.descricao ?? '—'}</Table.Td>
-                <Table.Td>
-                  <Switch
-                    checked={c.ativa}
-                    onChange={(e) => mToggle.mutate({ id: c.id, ativa: e.currentTarget.checked })}
-                  />
-                </Table.Td>
-                <Table.Td>
-                  <Group gap="xs">
-                    <ActionIcon variant="light" onClick={() => onEdit(c)} title="Editar">
-                      <IconEdit size={18} />
-                    </ActionIcon>
-                    <ActionIcon
-                      color="red"
-                      variant="light"
-                      onClick={() => setConfirmDelete({ id: c.id, nome: c.nome })}
-                      title="Excluir"
-                    >
-                      <IconTrash size={18} />
-                    </ActionIcon>
-                  </Group>
-                </Table.Td>
-              </Table.Tr>
-            ))}
+  {items.map((c) => {
+    const qnt = c.perguntasCount ?? 0;
+    const hasPerg = qnt > 0;
+
+    return (
+      <Table.Tr key={c.id}>
+        <Table.Td>{c.nome}</Table.Td>
+        <Table.Td>{c.descricao ?? '—'}</Table.Td>
+
+        {/* Perguntas: badge clicável e centralizado */}
+        <Table.Td style={{ textAlign: 'center' }}>
+<Badge
+    component={Link}
+    to={`/admin/perguntas?categoriaId=${c.id}`}
+    variant="light"
+    color={(c.perguntasCount ?? 0) > 0 ? 'teal' : 'gray'}
+    style={{ cursor: 'pointer' }}
+    title={(c.perguntasCount ?? 0) > 0 ? 'Ver perguntas desta categoria' : 'Sem perguntas'}
+  >
+    {c.perguntasCount ?? 0}
+  </Badge>
+        </Table.Td>
+
+        {/* Ativa: centralizado */}
+        <Table.Td style={{ textAlign: 'center' }}>
+          <Switch
+            checked={c.ativa}
+            onChange={(e) => mToggle.mutate({ id: c.id, ativa: e.currentTarget.checked })}
+          />
+        </Table.Td>
+
+        {/* Ações: só ícones, alinhado à direita */}
+        <Table.Td>
+          <Group gap={6} justify="flex-end" wrap="nowrap">
+            <ActionIcon
+              variant="subtle"
+              title="Editar"
+              onClick={() => onEdit(c)}
+            >
+              <IconEdit size={18} />
+            </ActionIcon>
+
+            <ActionIcon
+              color="red"
+              variant="subtle"
+              title="Excluir"
+              onClick={() => setConfirmDelete({ id: c.id, nome: c.nome })}
+            >
+              <IconTrash size={18} />
+            </ActionIcon>
+
+            {/* Gerir perguntas (ícone) */}
+            <ActionIcon
+  component={Link}
+  to={`/admin/perguntas?categoriaId=${c.id}`}
+  variant="light"
+  title="Ver perguntas"
+>
+  <IconListDetails size={18} />
+</ActionIcon>
+          </Group>
+        </Table.Td>
+      </Table.Tr>
+    );
+  })}
 
             {!isFetching && items.length === 0 && (
               <Table.Tr>
-                <Table.Td colSpan={4}>
+                <Table.Td colSpan={5}>
                   <Text c="dimmed" ta="center">Nenhuma categoria encontrada.</Text>
                 </Table.Td>
               </Table.Tr>
