@@ -3628,19 +3628,19 @@
     ]
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "C:\\Users\\solli\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/workspace/src/TalkClass.API/TalkClass.API.csproj",
+      "projectUniqueName": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.API\\TalkClass.API.csproj",
       "projectName": "TalkClass.API",
-      "projectPath": "/workspace/src/TalkClass.API/TalkClass.API.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/workspace/src/TalkClass.API/obj/",
+      "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.API\\TalkClass.API.csproj",
+      "packagesPath": "C:\\Users\\solli\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\solli\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -3652,14 +3652,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/workspace/src/TalkClass.Application/TalkClass.Application.csproj": {
-              "projectPath": "/workspace/src/TalkClass.Application/TalkClass.Application.csproj"
+            "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj": {
+              "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj"
             },
-            "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj": {
-              "projectPath": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj"
+            "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj": {
+              "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj"
             },
-            "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj": {
-              "projectPath": "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj"
+            "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\TalkClass.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\TalkClass.Infrastructure.csproj"
             }
           }
         }
@@ -3763,7 +3763,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
@@ -3772,7 +3772,7 @@
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "TalkClass.API depends on Microsoft.Extensions.Configuration (>= 8.0.8) but Microsoft.Extensions.Configuration 8.0.8 was not found. An approximate best match of Microsoft.Extensions.Configuration 9.0.0 was resolved.",
+      "message": "TalkClass.API depende de Microsoft.Extensions.Configuration (>= 8.0.8), mas Microsoft.Extensions.Configuration 8.0.8 não foi encontrado. A melhor correspondência aproximada de Microsoft.Extensions.Configuration 9.0.0 foi resolvida.",
       "libraryId": "Microsoft.Extensions.Configuration",
       "targetGraphs": [
         "net8.0"
@@ -3782,7 +3782,7 @@
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "TalkClass.API depends on Microsoft.Extensions.Configuration.EnvironmentVariables (>= 8.0.8) but Microsoft.Extensions.Configuration.EnvironmentVariables 8.0.8 was not found. An approximate best match of Microsoft.Extensions.Configuration.EnvironmentVariables 9.0.0 was resolved.",
+      "message": "TalkClass.API depende de Microsoft.Extensions.Configuration.EnvironmentVariables (>= 8.0.8), mas Microsoft.Extensions.Configuration.EnvironmentVariables 8.0.8 não foi encontrado. A melhor correspondência aproximada de Microsoft.Extensions.Configuration.EnvironmentVariables 9.0.0 foi resolvida.",
       "libraryId": "Microsoft.Extensions.Configuration.EnvironmentVariables",
       "targetGraphs": [
         "net8.0"
@@ -3792,7 +3792,7 @@
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "TalkClass.API depends on Microsoft.Extensions.Configuration.FileExtensions (>= 8.0.8) but Microsoft.Extensions.Configuration.FileExtensions 8.0.8 was not found. An approximate best match of Microsoft.Extensions.Configuration.FileExtensions 9.0.0 was resolved.",
+      "message": "TalkClass.API depende de Microsoft.Extensions.Configuration.FileExtensions (>= 8.0.8), mas Microsoft.Extensions.Configuration.FileExtensions 8.0.8 não foi encontrado. A melhor correspondência aproximada de Microsoft.Extensions.Configuration.FileExtensions 9.0.0 foi resolvida.",
       "libraryId": "Microsoft.Extensions.Configuration.FileExtensions",
       "targetGraphs": [
         "net8.0"
@@ -3802,7 +3802,7 @@
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "TalkClass.API depends on Microsoft.Extensions.Configuration.Json (>= 8.0.8) but Microsoft.Extensions.Configuration.Json 8.0.8 was not found. An approximate best match of Microsoft.Extensions.Configuration.Json 9.0.0 was resolved.",
+      "message": "TalkClass.API depende de Microsoft.Extensions.Configuration.Json (>= 8.0.8), mas Microsoft.Extensions.Configuration.Json 8.0.8 não foi encontrado. A melhor correspondência aproximada de Microsoft.Extensions.Configuration.Json 9.0.0 foi resolvida.",
       "libraryId": "Microsoft.Extensions.Configuration.Json",
       "targetGraphs": [
         "net8.0"
