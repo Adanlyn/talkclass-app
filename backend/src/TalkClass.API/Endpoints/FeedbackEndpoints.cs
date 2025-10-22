@@ -20,7 +20,9 @@ public record NovaResposta(
 
 public record NovoFeedback(
     Guid categoriaId,
-    string? cursoOuTurma,     // <- CursoOuTurma, igual à sua entidade
+    string? cursoOuTurma,
+    string? nomeIdentificado,
+    string? contatoIdentificado,
     List<NovaResposta> respostas
 );
 
@@ -37,7 +39,8 @@ public static class FeedbackEndpoints
             [FromQuery] Guid? categoriaId,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
-            [FromQuery] string? sort = "desc"
+            [FromQuery] string? sort = "desc",
+            [FromQuery] bool? apenasIdentificados = null
         ) =>
         {
             var qry = db.Feedbacks
@@ -52,6 +55,8 @@ public static class FeedbackEndpoints
                 qry = qry.Where(f =>
                     EF.Functions.ILike(f.Categoria.Nome, like) ||
                     EF.Functions.ILike(f.CursoOuTurma ?? "", like) ||
+EF.Functions.ILike(f.NomeIdentificado ?? "", like) ||
+    EF.Functions.ILike(f.ContatoIdentificado ?? "", like) ||
                     f.Respostas.Any(r =>
                     r.Tipo == TipoAvaliacao.Texto &&
                     r.ValorTexto != null &&
@@ -62,6 +67,11 @@ public static class FeedbackEndpoints
 
             if (categoriaId.HasValue)
                 qry = qry.Where(f => f.CategoriaId == categoriaId.Value);
+
+            if (apenasIdentificados == true)
+            {
+                qry = qry.Where(f => f.NomeIdentificado != null || f.ContatoIdentificado != null);
+            }
 
             qry = (sort?.ToLowerInvariant()) switch
             {
@@ -81,11 +91,13 @@ public static class FeedbackEndpoints
                     categoriaId = f.CategoriaId,
                     categoriaNome = f.Categoria.Nome,
                     cursoOuTurma = f.CursoOuTurma,
-
+                    identificado = (f.NomeIdentificado != null || f.ContatoIdentificado != null),
+                    nomeIdentificado = f.NomeIdentificado,
+                    contatoIdentificado = f.ContatoIdentificado,
                     texto = f.Respostas
                     .Where(r => r.Tipo == TipoAvaliacao.Texto && r.ValorTexto != null)
                     .Select(r => r.ValorTexto!)
-                    .OrderBy(x => x)     // qualquer ordenação estável; pode trocar por r.Id se preferir
+                    .OrderBy(x => x)
                     .FirstOrDefault(),
 
                     resumo = f.Respostas
@@ -200,6 +212,8 @@ public static class FeedbackEndpoints
          Id = Guid.NewGuid(),
          CategoriaId = dto.categoriaId,
          CursoOuTurma = dto.cursoOuTurma,
+         NomeIdentificado = string.IsNullOrWhiteSpace(dto.nomeIdentificado) ? null : dto.nomeIdentificado.Trim(),
+         ContatoIdentificado = string.IsNullOrWhiteSpace(dto.contatoIdentificado) ? null : dto.contatoIdentificado.Trim(),
          CriadoEm = DateTime.UtcNow,
          Respostas = new List<FeedbackResposta>()
      };

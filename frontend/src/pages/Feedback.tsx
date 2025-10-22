@@ -132,6 +132,8 @@ export default function Feedback() {
     const dto: CreateFeedbackDto = {
       categoriaId: categoriaAtivaId,
       cursoOuTurma: form.values.cursoTurma?.trim() || undefined,
+      nomeIdentificado: form.values.nomeIdentificado?.trim() || undefined,
+      contatoIdentificado: form.values.contatoIdentificado?.trim() || undefined,
       respostas: perguntas.map((p) => {
         const raw = form.values[p.id];
         return {
@@ -268,6 +270,34 @@ export default function Feedback() {
                       {...form.getInputProps('cursoTurma')}
                     />
                   </Box>
+
+                  {/* Campo Nome (identificação opcional) */}
+                  <Box>
+                    <Title order={4} ta="center" mb={10} c="#2b231f">
+                      Nome (opcional)
+                    </Title>
+                    <Textarea
+                      placeholder="Digite seu nome (caso queira se identificar)"
+                      minRows={1}
+                      autosize
+                      classNames={{ input: classes.textarea }}
+                      {...form.getInputProps('nomeIdentificado')}
+                    />
+                  </Box>
+
+                  <Box>
+                    <Title order={4} ta="center" mb={10} c="#2b231f">
+                      Contato (opcional)
+                    </Title>
+                    <Textarea
+                      placeholder="E-mail ou telefone (caso queira retorno)"
+                      minRows={1}
+                      autosize
+                      classNames={{ input: classes.textarea }}
+                      {...form.getInputProps('contatoIdentificado')}
+                    />
+                  </Box>
+
 
                   {!categoriaAtiva && (
                     <Text ta="center" c="dimmed">

@@ -35,6 +35,8 @@ export async function getPerguntasDaCategoria(categoriaId: string) {
 export type CreateFeedbackDto = {
   categoriaId: string;
   cursoOuTurma?: string;
+  nomeIdentificado?: string;
+  contatoIdentificado?: string;
   respostas: Array<{
     perguntaId: string;
     tipo: TipoAvaliacao;
