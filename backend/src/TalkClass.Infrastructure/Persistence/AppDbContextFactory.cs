@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+
 
 namespace TalkClass.Infrastructure.Persistence;
 
@@ -17,7 +19,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
             .AddEnvironmentVariables()
             .Build();
 
-        var cs = cfg.GetConnectionString("Postgres")
+        var cs = cfg.GetConnectionString("DefaultConnection")
                  ?? "Host=localhost;Port=5432;Database=talkclass;Username=postgres;Password=talkclass";
 
         var opts = new DbContextOptionsBuilder<AppDbContext>()

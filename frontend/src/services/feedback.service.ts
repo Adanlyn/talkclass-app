@@ -48,3 +48,27 @@ export type CreateFeedbackDto = {
 export async function createFeedback(dto: CreateFeedbackDto) {
   await api.post('/feedbacks', dto);
 }
+
+export type FeedbackListParams = {
+  search?: string;
+  page?: number;
+  pageSize?: number;
+  categoriaId?: string;
+  sort?: 'asc' | 'desc';
+};
+
+export type FeedbackListItem = {
+  id: string;
+  criadoEm: string;          // ISO
+  categoriaId: string;
+  categoriaNome: string;
+  cursoOuTurma?: string | null;
+  resumo?: string | null;
+  qtdRespostas: number;
+  notaMedia?: number | null;
+};
+
+export async function listFeedbacks(p: FeedbackListParams) {
+  const { data } = await api.get('/feedbacks', { params: p });
+  return data as { items: FeedbackListItem[]; total: number };
+}

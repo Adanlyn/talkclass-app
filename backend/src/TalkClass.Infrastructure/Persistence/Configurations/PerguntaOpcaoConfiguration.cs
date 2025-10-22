@@ -11,11 +11,15 @@ public class PerguntaOpcaoConfiguration : IEntityTypeConfiguration<PerguntaOpcao
         b.ToTable("pergunta_opcoes");
         b.HasKey(x => x.Id);
 
-        b.Property(x => x.Texto).IsRequired().HasMaxLength(200);
+        b.Property(x => x.Texto)
+            .HasMaxLength(200)
+            .IsRequired();
 
         b.HasOne(x => x.Pergunta)
-            .WithMany(p => p.Opcoes)
+            .WithMany(p => p.Opcoes)         // precisa existir ICollection<PerguntaOpcao> Opcoes em Pergunta
             .HasForeignKey(x => x.PerguntaId)
-            .OnDelete(DeleteBehavior.Cascade); // excluir pergunta => exclui opções
+            .OnDelete(DeleteBehavior.Cascade);
+
+        b.HasIndex(x => x.PerguntaId);
     }
 }

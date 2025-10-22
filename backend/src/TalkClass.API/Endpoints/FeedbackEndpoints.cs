@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TalkClass.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc;
 
 // === IMPORTANTE: namespaces das suas entidades e enum ===
 using TalkClass.Domain.Entities;
@@ -27,6 +28,89 @@ public static class FeedbackEndpoints
 {
     public static IEndpointRouteBuilder MapFeedbackEndpoints(this IEndpointRouteBuilder app)
     {
+        var feedbacks = app.MapGroup("/api/feedbacks");
+
+
+        // GET /api/feedbacks  -> lista paginada + filtros
+        feedbacks.MapGet("", async (AppDbContext db,
+            [FromQuery] string? search,
+            [FromQuery] Guid? categoriaId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? sort = "desc"
+        ) =>
+        {
+            var qry = db.Feedbacks
+                .AsNoTracking()
+                .Include(f => f.Categoria)
+                .Include(f => f.Respostas)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var like = $"%{search}%";
+                qry = qry.Where(f =>
+                    EF.Functions.ILike(f.Categoria.Nome, like) ||
+                    EF.Functions.ILike(f.CursoOuTurma ?? "", like) ||
+                    f.Respostas.Any(r =>
+                    r.Tipo == TipoAvaliacao.Texto &&
+                    r.ValorTexto != null &&
+                    EF.Functions.ILike(r.ValorTexto!, like)
+                )
+                );
+            }
+
+            if (categoriaId.HasValue)
+                qry = qry.Where(f => f.CategoriaId == categoriaId.Value);
+
+            qry = (sort?.ToLowerInvariant()) switch
+            {
+                "asc" => qry.OrderBy(f => f.CriadoEm),
+                _ => qry.OrderByDescending(f => f.CriadoEm)
+            };
+
+            var total = await qry.CountAsync();
+
+            var items = await qry
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(f => new
+                {
+                    id = f.Id,
+                    criadoEm = f.CriadoEm,
+                    categoriaId = f.CategoriaId,
+                    categoriaNome = f.Categoria.Nome,
+                    cursoOuTurma = f.CursoOuTurma,
+
+                    texto = f.Respostas
+                    .Where(r => r.Tipo == TipoAvaliacao.Texto && r.ValorTexto != null)
+                    .Select(r => r.ValorTexto!)
+                    .OrderBy(x => x)     // qualquer ordenação estável; pode trocar por r.Id se preferir
+                    .FirstOrDefault(),
+
+                    resumo = f.Respostas
+                    .Where(r => r.Tipo == TipoAvaliacao.Texto && r.ValorTexto != null)
+                    .Select(r => r.ValorTexto!.Length <= 140
+                        ? r.ValorTexto
+                        : r.ValorTexto!.Substring(0, 140) + "…")
+                    .OrderBy(x => x)
+                    .FirstOrDefault(),
+
+                    qtdRespostas = f.Respostas.Count,
+
+                    notaMedia = f.Respostas
+                    .Where(r => r.Tipo == TipoAvaliacao.Nota && r.ValorNota != null)
+                    .Select(r => (double)r.ValorNota!)
+                    .DefaultIfEmpty()
+                    .Average()
+
+
+                })
+                .ToListAsync();
+
+            return Results.Ok(new { items, total });
+        });
+
         // ===================== CATEGORIAS =====================
         var group = app.MapGroup("/api/categorias");
 
@@ -97,61 +181,51 @@ public static class FeedbackEndpoints
         });
 
         // ===================== FEEDBACKS =====================
-        var feedbacks = app.MapGroup("/api/feedbacks");
-
         // POST /api/feedbacks -> grava no banco
         feedbacks.MapPost("", async (NovoFeedback dto, AppDbContext db) =>
-        {
-            // 1) categoria válida e ativa?
-            var catOk = await db.Categorias
-                .AsNoTracking()
-                .AnyAsync(c => c.Id == dto.categoriaId && c.Ativa);
-            if (!catOk) return Results.BadRequest("Categoria inválida ou inativa.");
+ {
+     var catOk = await db.Categorias.AsNoTracking()
+         .AnyAsync(c => c.Id == dto.categoriaId && c.Ativa);
+     if (!catOk) return Results.BadRequest("Categoria inválida ou inativa.");
 
-            // 2) perguntas pertencem à categoria e ativas?
-            var idsPerg = dto.respostas.Select(r => r.perguntaId).Distinct().ToList();
-            var idsValidos = await db.Perguntas
-                .AsNoTracking()
-                .Where(p => idsPerg.Contains(p.Id) && p.CategoriaId == dto.categoriaId && p.Ativa)
-                .Select(p => p.Id)
-                .ToListAsync();
-            if (idsValidos.Count != idsPerg.Count)
-                return Results.BadRequest("Existe pergunta inválida para esta categoria.");
+     var idsPerg = dto.respostas.Select(r => r.perguntaId).Distinct().ToList();
+     var idsValidos = await db.Perguntas.AsNoTracking()
+         .Where(p => idsPerg.Contains(p.Id) && p.CategoriaId == dto.categoriaId && p.Ativa)
+         .Select(p => p.Id).ToListAsync();
+     if (idsValidos.Count != idsPerg.Count)
+         return Results.BadRequest("Existe pergunta inválida para esta categoria.");
 
-            // 3) monta entidades de acordo com seu modelo
-            var fb = new Feedback
-            {
-                Id = Guid.NewGuid(),
-                CategoriaId = dto.categoriaId,
-                CursoOuTurma = dto.cursoOuTurma,
-                CriadoEm = DateTime.UtcNow,
-                Respostas = new List<FeedbackResposta>()
-            };
+     var fb = new Feedback
+     {
+         Id = Guid.NewGuid(),
+         CategoriaId = dto.categoriaId,
+         CursoOuTurma = dto.cursoOuTurma,
+         CriadoEm = DateTime.UtcNow,
+         Respostas = new List<FeedbackResposta>()
+     };
 
-            foreach (var r in dto.respostas)
-            {
-                // converte int -> enum com validação básica
-                if (!Enum.IsDefined(typeof(TipoAvaliacao), r.tipo))
-                    return Results.BadRequest($"Tipo inválido na resposta da pergunta {r.perguntaId}.");
+     foreach (var r in dto.respostas)
+     {
+         if (!Enum.IsDefined(typeof(TipoAvaliacao), r.tipo))
+             return Results.BadRequest($"Tipo inválido na resposta da pergunta {r.perguntaId}.");
 
-                fb.Respostas.Add(new FeedbackResposta
-                {
-                    Id = Guid.NewGuid(),
-                    PerguntaId = r.perguntaId,
-                    Tipo = (TipoAvaliacao)r.tipo,
-                    ValorNota = r.valorNota,
-                    ValorBool = r.valorBool,
-                    ValorOpcao = r.valorOpcao, // string
-                    ValorTexto = r.valorTexto
-                });
-            }
+         fb.Respostas.Add(new FeedbackResposta
+         {
+             Id = Guid.NewGuid(),
+             PerguntaId = r.perguntaId,
+             Tipo = (TipoAvaliacao)r.tipo,
+             ValorNota = r.valorNota,   // usado quando tipo = Nota
+             ValorBool = r.valorBool,   // usado quando tipo = Sim/Não
+             ValorOpcao = r.valorOpcao,  // usado quando tipo = Múltipla escolha
+             ValorTexto = r.valorTexto   // usado quando tipo = Texto  <<<< AQUI
+         });
+     }
 
-            // Persistência
-            db.Set<Feedback>().Add(fb); // usa Set<> para não depender do nome do DbSet
-            await db.SaveChangesAsync();
+     db.Feedbacks.Add(fb);
+     await db.SaveChangesAsync();
 
-            return Results.Created($"/api/feedbacks/{fb.Id}", new { id = fb.Id });
-        });
+     return Results.Created($"/api/feedbacks/{fb.Id}", new { id = fb.Id });
+ });
 
         return app;
     }

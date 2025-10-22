@@ -184,6 +184,10 @@
               "target": "Package",
               "version": "[4.0.3, )"
             },
+            "EFCore.NamingConventions": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.8, )"

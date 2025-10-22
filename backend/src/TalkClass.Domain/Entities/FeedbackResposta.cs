@@ -14,7 +14,6 @@ public class FeedbackResposta
     public bool? ValorBool { get; set; }      // Sim/Não
     public string? ValorOpcao { get; set; }   // Frequência (ou múltipla)
     public string? ValorTexto { get; set; }   // Texto aberto
-
     public Feedback Feedback { get; set; } = default!;
     public Pergunta Pergunta { get; set; } = default!;
 }

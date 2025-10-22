@@ -10,6 +10,7 @@ using TalkClass.Application.Autenticacao.Dtos;
 using TalkClass.Application.Autenticacao.Handlers;
 using TalkClass.Infrastructure.Auth;
 using System.Text.Json.Serialization;
+using System.Text.Json;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +28,9 @@ string? connStr =
 if (string.IsNullOrWhiteSpace(connStr))
     throw new InvalidOperationException("Connection string não encontrada.");
 
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(connStr));
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(connStr)
+
+);
 builder.Services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 
 builder.Services.AddCors(o =>
@@ -68,6 +71,8 @@ builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 
 builder.Services.ConfigureHttpJsonOptions(opts =>
 {
+        opts.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+
     opts.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 

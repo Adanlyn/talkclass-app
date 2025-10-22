@@ -18,7 +18,7 @@ public class PerguntaConfiguration : IEntityTypeConfiguration<Pergunta>
         b.Property(x => x.Ordem).HasDefaultValue(0);
 
         b.HasOne(x => x.Categoria)
-            .WithMany() // se tiver ICollection<Pergunta> em Categoria, troque para WithMany(c => c.Perguntas)
+            .WithMany(c => c.Perguntas) // se tiver ICollection<Pergunta> em Categoria, troque para WithMany(c => c.Perguntas)
             .HasForeignKey(x => x.CategoriaId)
             .OnDelete(DeleteBehavior.Restrict);
 

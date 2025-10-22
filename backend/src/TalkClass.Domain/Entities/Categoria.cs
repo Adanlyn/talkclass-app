@@ -10,4 +10,6 @@ public class Categoria
     public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
 
     public ICollection<Pergunta> Perguntas { get; set; } = new List<Pergunta>();
+    public ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+
 }

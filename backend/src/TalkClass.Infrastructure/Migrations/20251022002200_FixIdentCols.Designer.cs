@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TalkClass.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251014224958_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251022002200_FixIdentCols")]
+    partial class FixIdentCols
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,30 +77,24 @@ namespace TalkClass.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<bool>("Ativa")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Descricao")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("character varying(120)");
+                        .HasColumnType("text");
 
                     b.Property<int>("Ordem")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.ToTable("categorias", (string)null);
+                    b.ToTable("Categorias");
                 });
 
             modelBuilder.Entity("TalkClass.Domain.Entities.Feedback", b =>
@@ -112,11 +106,20 @@ namespace TalkClass.Infrastructure.Migrations
                     b.Property<Guid>("CategoriaId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ContatoIdentificado")
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)");
+
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CursoOuTurma")
-                        .HasColumnType("text");
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("NomeIdentificado")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
 
                     b.HasKey("Id");
 
@@ -158,7 +161,7 @@ namespace TalkClass.Infrastructure.Migrations
 
                     b.HasIndex("PerguntaId");
 
-                    b.ToTable("feedback_respostas", (string)null);
+                    b.ToTable("FeedbackRespostas");
                 });
 
             modelBuilder.Entity("TalkClass.Domain.Entities.Pergunta", b =>
@@ -231,7 +234,7 @@ namespace TalkClass.Infrastructure.Migrations
             modelBuilder.Entity("TalkClass.Domain.Entities.Feedback", b =>
                 {
                     b.HasOne("TalkClass.Domain.Entities.Categoria", "Categoria")
-                        .WithMany()
+                        .WithMany("Feedbacks")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -250,7 +253,7 @@ namespace TalkClass.Infrastructure.Migrations
                     b.HasOne("TalkClass.Domain.Entities.Pergunta", "Pergunta")
                         .WithMany("Respostas")
                         .HasForeignKey("PerguntaId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Feedback");
@@ -282,6 +285,8 @@ namespace TalkClass.Infrastructure.Migrations
 
             modelBuilder.Entity("TalkClass.Domain.Entities.Categoria", b =>
                 {
+                    b.Navigation("Feedbacks");
+
                     b.Navigation("Perguntas");
                 });
 
