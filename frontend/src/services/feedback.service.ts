@@ -57,6 +57,10 @@ export type FeedbackListParams = {
   pageSize?: number;
   categoriaId?: string;
   sort?: 'asc' | 'desc';
+  dateStart?: string;     // 'YYYY-MM-DD'
+  dateEnd?: string;
+  courseName?: string;
+  identified?: boolean;   // true/false
 };
 
 export type FeedbackListItem = {
@@ -73,4 +77,9 @@ export type FeedbackListItem = {
 export async function listFeedbacks(p: FeedbackListParams) {
   const { data } = await api.get('/feedbacks', { params: p });
   return data as { items: FeedbackListItem[]; total: number };
+}
+
+export async function getFeedbackDetail(id: string) {
+  const { data } = await api.get(`/feedbacks/${id}`);
+  return data; // retorna o JSON do endpoint
 }

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.API\\TalkClass.API.csproj": {}
+    "/workspace/src/TalkClass.API/TalkClass.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.API\\TalkClass.API.csproj": {
+    "/workspace/src/TalkClass.API/TalkClass.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.API\\TalkClass.API.csproj",
+        "projectUniqueName": "/workspace/src/TalkClass.API/TalkClass.API.csproj",
         "projectName": "TalkClass.API",
-        "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.API\\TalkClass.API.csproj",
-        "packagesPath": "C:\\Users\\solli\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.API\\obj\\",
+        "projectPath": "/workspace/src/TalkClass.API/TalkClass.API.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/workspace/src/TalkClass.API/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\solli\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -26,14 +26,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj": {
-                "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj"
+              "/workspace/src/TalkClass.Application/TalkClass.Application.csproj": {
+                "projectPath": "/workspace/src/TalkClass.Application/TalkClass.Application.csproj"
               },
-              "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj": {
-                "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj"
+              "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj": {
+                "projectPath": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj"
               },
-              "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\TalkClass.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\TalkClass.Infrastructure.csproj"
+              "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj": {
+                "projectPath": "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj"
               }
             }
           }
@@ -137,21 +137,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj": {
+    "/workspace/src/TalkClass.Application/TalkClass.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj",
+        "projectUniqueName": "/workspace/src/TalkClass.Application/TalkClass.Application.csproj",
         "projectName": "TalkClass.Application",
-        "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj",
-        "packagesPath": "C:\\Users\\solli\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\obj\\",
+        "projectPath": "/workspace/src/TalkClass.Application/TalkClass.Application.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/workspace/src/TalkClass.Application/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\solli\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -163,8 +163,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj": {
-                "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj"
+              "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj": {
+                "projectPath": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj"
               }
             }
           }
@@ -209,21 +209,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj": {
+    "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj",
+        "projectUniqueName": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj",
         "projectName": "TalkClass.Domain",
-        "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj",
-        "packagesPath": "C:\\Users\\solli\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\obj\\",
+        "projectPath": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/workspace/src/TalkClass.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\solli\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -267,21 +267,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\TalkClass.Infrastructure.csproj": {
+    "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\TalkClass.Infrastructure.csproj",
+        "projectUniqueName": "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj",
         "projectName": "TalkClass.Infrastructure",
-        "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\TalkClass.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\solli\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Infrastructure\\obj\\",
+        "projectPath": "/workspace/src/TalkClass.Infrastructure/TalkClass.Infrastructure.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/workspace/src/TalkClass.Infrastructure/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\solli\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -293,11 +293,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj": {
-                "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Application\\TalkClass.Application.csproj"
+              "/workspace/src/TalkClass.Application/TalkClass.Application.csproj": {
+                "projectPath": "/workspace/src/TalkClass.Application/TalkClass.Application.csproj"
               },
-              "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj": {
-                "projectPath": "C:\\Users\\solli\\Documents\\talkclass-app\\backend\\src\\TalkClass.Domain\\TalkClass.Domain.csproj"
+              "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj": {
+                "projectPath": "/workspace/src/TalkClass.Domain/TalkClass.Domain.csproj"
               }
             }
           }
@@ -384,7 +384,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

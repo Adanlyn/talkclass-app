@@ -34,13 +34,16 @@ public static class FeedbackEndpoints
 
 
         // GET /api/feedbacks  -> lista paginada + filtros
-        feedbacks.MapGet("", async (AppDbContext db,
-            [FromQuery] string? search,
+feedbacks.MapGet("", async (AppDbContext db,
+          [FromQuery] string? search,
             [FromQuery] Guid? categoriaId,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? sort = "desc",
-            [FromQuery] bool? apenasIdentificados = null
+            [FromQuery] string? courseName = null,
+            [FromQuery] bool? identified = null,
+            [FromQuery] string? dateStart = null,  
+            [FromQuery] string? dateEnd = null
         ) =>
         {
             var qry = db.Feedbacks
@@ -49,14 +52,27 @@ public static class FeedbackEndpoints
                 .Include(f => f.Respostas)
                 .AsQueryable();
 
+            // --- Período (YYYY-MM-DD) -> UTC inclusivo ---
+          DateTime? startUtc = null, endUtc = null;
+            if (!string.IsNullOrWhiteSpace(dateStart) &&
+                DateTime.TryParse(dateStart, out var dStart))
+            {
+                startUtc = DateTime.SpecifyKind(dStart.Date, DateTimeKind.Utc);
+            }
+            if (!string.IsNullOrWhiteSpace(dateEnd) &&
+                DateTime.TryParse(dateEnd, out var dEnd))
+            {
+                endUtc = DateTime.SpecifyKind(dEnd.Date.AddDays(1).AddTicks(-1), DateTimeKind.Utc);
+            }
+
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var like = $"%{search}%";
                 qry = qry.Where(f =>
                     EF.Functions.ILike(f.Categoria.Nome, like) ||
                     EF.Functions.ILike(f.CursoOuTurma ?? "", like) ||
-EF.Functions.ILike(f.NomeIdentificado ?? "", like) ||
-    EF.Functions.ILike(f.ContatoIdentificado ?? "", like) ||
+                    EF.Functions.ILike(f.NomeIdentificado ?? "", like) ||
+                    EF.Functions.ILike(f.ContatoIdentificado ?? "", like) ||
                     f.Respostas.Any(r =>
                     r.Tipo == TipoAvaliacao.Texto &&
                     r.ValorTexto != null &&
@@ -68,9 +84,25 @@ EF.Functions.ILike(f.NomeIdentificado ?? "", like) ||
             if (categoriaId.HasValue)
                 qry = qry.Where(f => f.CategoriaId == categoriaId.Value);
 
-            if (apenasIdentificados == true)
+            if (startUtc.HasValue)
+                qry = qry.Where(f => f.CriadoEm >= startUtc.Value);
+            if (endUtc.HasValue)
+                qry = qry.Where(f => f.CriadoEm <= endUtc.Value);
+
+            // curso (contém)
+            if (!string.IsNullOrWhiteSpace(courseName))
             {
-                qry = qry.Where(f => f.NomeIdentificado != null || f.ContatoIdentificado != null);
+                var likeCurso = $"%{courseName}%";
+                qry = qry.Where(f => EF.Functions.ILike(f.CursoOuTurma ?? "", likeCurso));
+            }
+
+            // identificado: true = só identificados, false = só anônimos
+            if (identified.HasValue)
+            {
+                if (identified.Value)
+                    qry = qry.Where(f => f.NomeIdentificado != null || f.ContatoIdentificado != null);
+                else
+                    qry = qry.Where(f => f.NomeIdentificado == null && f.ContatoIdentificado == null);
             }
 
             qry = (sort?.ToLowerInvariant()) switch
