@@ -78,6 +78,7 @@ export default function AdminFeedbacks() {
     setPage(1);
     setSort((s) => (s === 'desc' ? 'asc' : 'desc'));
   }
+  const respostasComNota = (detail?.respostas ?? []).some((r: any) => r.nota != null);
 
   return (
     <Paper p="lg" radius="md" className={classes.panel}>
@@ -217,19 +218,35 @@ export default function AdminFeedbacks() {
               </Paper>
             )}
             <Divider label="Perguntas & Respostas" mb="sm" />
-            {detail.respostas.map((r, i) => (
+            {((detail.respostas ?? []).filter((r: any) =>
+              r.nota != null ||
+              (typeof r.texto === 'string' && r.texto.trim() !== '') ||
+              (typeof r.opcao === 'string' && r.opcao.trim() !== '')
+            )).map((r: any, i: number) => (
               <Paper key={i} p="sm" withBorder mb="sm">
                 <Text fw={600}>{r.pergunta}</Text>
-                <Text size="sm">Nota: {r.nota ?? '—'} | Freq.: {r.frequencia ?? '—'}</Text>
-                {r.texto && <Text mt={4}>{r.texto}</Text>}
+
+                {/* Se for texto, mostra só o texto */}
+                {typeof r.texto === 'string' && r.texto.trim() !== '' ? (
+     <Text mt={4}>{r.texto}</Text>
+                ) : (
+                  (r.nota != null || (r.opcao && r.opcao.trim() !== '')) && (
+                    <Text size="sm" mt={2}>
+                      {r.nota != null ? `Nota: ${r.nota}` : ''}
+                      {r.nota != null && r.opcao ? ' | ' : ''}
+                      {r.opcao ? `Opção: ${r.opcao}` : ''}
+                    </Text>
+                  )
+                )}
               </Paper>
             ))}
             <Divider mb="sm" />
-            <Group gap="xs">
-              <Text>Nota média:</Text>
-              <Badge>{Number.isFinite(detail.notaMedia as any) ? detail.notaMedia?.toFixed(2) : '—'}</Badge>
-            </Group>
-            {detail.resumo && <Text c="dimmed" mt="xs">Resumo: {detail.resumo}</Text>}
+           {respostasComNota && (
+   <Group gap="xs">
+     <Text>Nota média:</Text>
+     <Badge>{Number.isFinite(detail.notaMedia as any) ? Number(detail.notaMedia).toFixed(2) : '—'}</Badge>
+   </Group>
+ )}
           </>
         )}
       </Drawer>

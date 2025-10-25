@@ -1,5 +1,5 @@
 // ======================= TIPOS =======================
-export type TipoAvaliacao = 'Nota' | 'SimNao' | 'Multipla' | 'Texto';
+export type TipoAvaliacao = 'Nota' | 'Multipla' | 'Texto';
 
 export type PerguntaOpcao = { texto: string; valor: number };
 

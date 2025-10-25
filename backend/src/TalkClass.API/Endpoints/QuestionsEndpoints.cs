@@ -169,7 +169,7 @@ g.MapPut("{id:guid}", async (Guid id, [FromBody] UpdateQuestionRequest r, AppDbC
         return app;
     }
 
-    static bool RequiresOptions(TipoAvaliacao t) => t == TipoAvaliacao.Multipla || t == TipoAvaliacao.SimNao;
+    static bool RequiresOptions(TipoAvaliacao t) => t == TipoAvaliacao.Multipla;
 
     // Regras:
     // - SimNao: se não vier opções, gera ["Não"(0), "Sim"(1)]
@@ -177,12 +177,6 @@ g.MapPut("{id:guid}", async (Guid id, [FromBody] UpdateQuestionRequest r, AppDbC
     // - Nota | Texto: ignora opções
     static List<PerguntaOpcaoDto> NormalizeOptions(TipoAvaliacao t, List<PerguntaOpcaoDto>? opcoes)
     {
-        if (t == TipoAvaliacao.SimNao)
-        {
-            var given = (opcoes ?? new()).Where(o => !string.IsNullOrWhiteSpace(o.Texto)).ToList();
-            if (given.Count >= 2) return given;
-            return new() { new("Não", 0), new("Sim", 1) };
-        }
         if (t == TipoAvaliacao.Multipla)
         {
             return (opcoes ?? new())

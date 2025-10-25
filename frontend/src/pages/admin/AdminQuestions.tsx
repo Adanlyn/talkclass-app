@@ -19,7 +19,6 @@ import OptionEditor from '../../components/OptionEditor';
 
 const TYPES: { value: TipoAvaliacao; label: string; needsOptions?: boolean }[] = [
   { value: 'Nota', label: 'Nota (1–5)' },
-  { value: 'SimNao', label: 'Sim/Não', needsOptions: true },
   { value: 'Multipla', label: 'Múltipla escolha', needsOptions: true },
   { value: 'Texto', label: 'Texto (resposta aberta)' },
 ];
