@@ -4,7 +4,7 @@ import { getToken, isLoggedIn, logoutAndReload } from '../utils/auth';
 const base = (import.meta.env.VITE_API_URL ?? 'http://localhost:5252').replace(/\/+$/, '');
 
 export const api = axios.create({
-  baseURL: `${base}/api`,        // <<< coloca um /api só aqui
+  baseURL: `/api`,        // <<< coloca um /api só aqui
   headers: { 'Content-Type': 'application/json' },
   withCredentials: false,
 });

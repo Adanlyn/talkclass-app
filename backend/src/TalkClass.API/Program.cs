@@ -77,6 +77,7 @@ builder.Services.ConfigureHttpJsonOptions(opts =>
 });
 
 var app = builder.Build();
+var api = app.MapGroup("/api");
 
 app.UseCors();
 app.UseSwagger();
@@ -92,5 +93,7 @@ app.MapFeedbackEndpoints();
 app.MapCategoryEndpoints();
 
 app.MapQuestionsEndpoints();
+
+api.MapDashboardEndpoints();
 
 app.Run();
