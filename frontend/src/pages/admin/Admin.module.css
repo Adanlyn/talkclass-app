@@ -119,3 +119,78 @@
     display: inline-grid !important;
   }
 }
+
+/* ---- Painéis e cartões KPI ---- */
+.panel {
+  background: var(--mantine-color-body);
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  border-radius: var(--mantine-radius-md);
+}
+
+.cardKpi {
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+}
+
+.kpiIcon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(255,102,0,.12);
+  color: var(--mantine-color-orange-7);
+}
+
+/* ---- Tabela padrão do dashboard ---- */
+.table {
+  --tbl-pad: 10px;
+}
+.table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--mantine-color-body);
+  z-index: 1;
+}
+.table th,
+.table td {
+  padding-block: var(--tbl-pad);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* ---- Área dos gráficos ----
+   Resolve canvas "gigante" e autoscroll  */
+.chartBox {
+  position: relative;
+  height: 300px;           /* default desktop */
+  width: 100%;
+  overflow: hidden;
+}
+
+/* torna canvas obediente ao box */
+.chartBox canvas {
+  display: block;
+  max-height: 100% !important;
+  width: 100% !important;
+}
+
+/* em cards menores (coluna direita, etc) */
+@media (max-width: 1024px) {
+  .chartBox { height: 260px; }
+}
+@media (max-width: 640px) {
+  .chartBox { height: 220px; }
+}
+
+/* ---- Alert compacto (evita cortar conteúdo) ---- */
+.alertCompact {
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+.alertCompact :where(p, span, div) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
