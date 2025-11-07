@@ -12,6 +12,24 @@ public static class CategoriesEndpoints
 {
     public static IEndpointRouteBuilder MapCategoryEndpoints(this IEndpointRouteBuilder app)
     {
+
+        app.MapGet("/api/categories/public", async (AppDbContext db) =>
+{
+    var cats = await db.Categorias
+        .AsNoTracking()
+        .Where(c => c.Ativa)
+        .OrderBy(c => c.Ordem).ThenBy(c => c.Nome)
+        .Select(c => new
+        {
+            id = c.Id,
+            nome = c.Nome
+        })
+        .ToListAsync();
+
+    return Results.Ok(cats);
+})
+.WithTags("Categories");
+
         var group = app.MapGroup("/api/categories")
                        .WithTags("Categories")
                        .RequireAuthorization(); // protege tudo (ajuste se quiser GET público)
@@ -146,7 +164,7 @@ public static class CategoriesEndpoints
                 return Results.Problem("Erro ao excluir categoria.");
             }
         });
-
+        
         return app;
     }
 

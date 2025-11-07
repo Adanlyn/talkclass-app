@@ -6,6 +6,17 @@ const qp = (o: Record<string, any>) =>
   Object.fromEntries(Object.entries(o).filter(([,v]) => v !== undefined && v !== null
 ));
 
+function qs(params: Record<string, any>) {
+  const sp = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v === undefined || v === null || v === '') return;
+    // booleans e números viram string
+    sp.append(k, String(v));
+  });
+  return `?${sp.toString()}`;
+}
+
+
 export type KpisDTO = {
   nps: number;
   totalFeedbacks: number;
@@ -17,22 +28,7 @@ export type SeriesPoint = { bucket: string; avg: number; count: number };
 export type DistBin = { rating: number; total: number };
 export type TopArea = { categoryId: number; area: string; media: number; alertas: number };
 
-export async function getKpis(params?: { from?: string; to?: string }) {
-  const { data } = await api.get<KpisDTO>('/dashboard/kpis', { params });
-  return data;
-}
-/*export async function getSeries(params?: { categoryId?: number; interval?: 'day'|'week'; from?: string; to?: string }) {
-  const { data } = await api.get<SeriesPoint[]>('/dashboard/series', { params });
-  return data;
-}*/
-export async function getDistribution(params?: { from?: string; to?: string }) {
-  const { data } = await api.get<DistBin[]>('/dashboard/distribution', { params });
-  return data;
-}
-export async function getTopAreas(params?: { limit?: number; from?: string; to?: string }) {
-  const { data } = await api.get<TopArea[]>('/dashboard/top-areas', { params });
-  return data;
-}
+
 
 // ====== TIPOS NOVOS (adicione somente se ainda não existir) ======
 export type NpsSeriesPoint = { bucket: string; nps: number };
@@ -56,106 +52,145 @@ export type WordcloudItem = { word: string; count: number };
 const toIso = (d: string | Date) =>
   new Date(d).toISOString();
 
-// ====== SERVICES NOVOS (rotas adicionais) ======
+// ====== SERVICES  ======
 
-// NPS por período (linha)
-
-
-
-// Heatmap Tópicos × Semana
-/*export const getTopicsHeatmap = (p: { from: string; to: string; categoryId?: string; top?: number }) =>
-  api.get('/dashboard/topics-heatmap', { params: { ...p, top: p.top ?? 6 } }).then(r => r.data);
-*/
-// Polaridade por tópico (barras empilhadas)
-export function getTopicsPolarity(p: { from: string; to: string; signal?: AbortSignal }) {
-  return api.get<TopicsPolarityRow[]>('/dashboard/topics-polarity', { params: p, signal: p.signal }).then(r => r.data);
-}
-
-
-
-
-// Boxplot — notas por Curso/Turno/Unidade
-export function getBoxplotNotas(p: {
-  groupBy: 'curso' | 'turno' | 'unidade';
+// KPIs (header)
+export function getKpis(p: {
   from: string; to: string;
-  categoryId?: string; questionId?: string;
+  categoryId?: number; questionId?: number;
   curso?: string; turno?: string; unidade?: string;
   identified?: boolean;
-  signal?: AbortSignal;
 }) {
-  return api.get<BoxplotRow[]>('/dashboard/boxplot-notas', { params: p, signal: p.signal }).then(r => r.data);
+  return api.get(`/dashboard/kpis${qs(p)}`).then(r => r.data);
 }
 
-// Nuvem de Palavras (positivas/negativas)
+// Série temporal (linha)
+export function getSeries(p: {
+  interval: 'day' | 'week' | 'month';
+  from: string; to: string;
+  categoryId?: number; questionId?: number;
+  curso?: string; turno?: string; unidade?: string;
+  identified?: boolean;
+}) {
+  return api.get(`/dashboard/series${qs(p)}`).then(r => r.data);
+}
+
+// Distribuição de notas (barras)
+export function getDistribution(p: {
+  from: string; to: string;
+  categoryId?: number; questionId?: number;
+  curso?: string; turno?: string; unidade?: string;
+  identified?: boolean;
+}) {
+  return api.get(`/dashboard/distribution${qs(p)}`).then(r => r.data);
+}
+
+// Top áreas (cards/painéis auxiliares)
+export function getTopAreas(p: {
+  limit: number;
+  from: string; to: string;
+  categoryId?: number; questionId?: number;
+  curso?: string; turno?: string; unidade?: string;
+  identified?: boolean;
+}) {
+  return api.get(`/dashboard/top-areas${qs(p)}`).then(r => r.data);
+}
+
+// NPS (linha)
+export function getNpsSeries(p: {
+  interval: 'day' | 'week' | 'month';
+  from: string; to: string;
+  categoryId?: number; questionId?: number;
+  curso?: string; turno?: string; unidade?: string;
+  identified?: boolean;
+}) {
+  return api.get(`/dashboard/nps-series${qs(p)}`).then(r => r.data);
+}
+
+// Volume de feedbacks (linha)
+export function getVolumeSeries(p: {
+  interval: 'day' | 'week' | 'month';
+  from: string; to: string;
+  categoryId?: number; questionId?: number;
+  curso?: string; turno?: string; unidade?: string;
+  identified?: boolean;
+}) {
+  return api.get(`/dashboard/volume-series${qs(p)}`).then(r => r.data);
+}
+
+// Polaridade por tópico (barras empilhadas)
+export function getTopicsPolarity(p: {
+  from: string; to: string;
+  categoryId?: number; questionId?: number;
+  curso?: string; turno?: string; unidade?: string;
+  identified?: boolean;
+}) {
+  return api.get(`/dashboard/topics-polarity${qs(p)}`).then(r => r.data);
+}
+
+// Heatmap Tópicos × Semana (empilhado)
+export function getTopicsHeatmap(p: {
+  limit?: number; // ou top
+  from: string; to: string;
+  categoryId?: number; questionId?: number;
+  curso?: string; turno?: string; unidade?: string;
+  identified?: boolean;
+}) {
+  // compatibilidade: se vier top, mapeia para limit
+  const payload = { ...p, limit: p.limit ?? (p as any).top };
+  return api.get(`/dashboard/topics-heatmap${qs(payload)}`).then(r => r.data);
+}
+
+// Piores perguntas (Top 5)
+export function getWorstQuestions(p: {
+  limit: number;
+  from: string; to: string;
+  categoryId?: number; questionId?: number;
+  curso?: string; turno?: string; unidade?: string;
+  identified?: boolean;
+}) {
+  return api.get(`/dashboard/questions-worst${qs(p)}`).then(r => r.data);
+}
+
+// Alertas por área (barras empilhadas)
+export function getAreasAlerts(p: {
+  limit: number;
+  from: string; to: string;
+  categoryId?: number; questionId?: number;
+  curso?: string; turno?: string; unidade?: string;
+  identified?: boolean;
+}) {
+  return api.get(`/dashboard/areas-alerts${qs(p)}`).then(r => r.data);
+}
+
+// Participação por horário
+export function getHourly(p: {
+  from: string; to: string;
+  categoryId?: number; questionId?: number;
+  curso?: string; turno?: string; unidade?: string;
+  identified?: boolean;
+}) {
+  return api.get(`/dashboard/hourly${qs(p)}`).then(r => r.data);
+}
+
+// Boxplot — notas por Curso/Turno
+export function getBoxplotNotas(p: {
+  groupBy: 'curso' | 'turno';
+  from: string; to: string;
+  categoryId?: number; questionId?: number;
+  curso?: string; turno?: string; unidade?: string;
+  identified?: boolean;
+}) {
+  return api.get(`/dashboard/boxplot-notas${qs(p)}`).then(r => r.data);
+}
+
+// Wordcloud (positiva/negativa)
 export function getWordcloud(p: {
   polarity: 'pos' | 'neg';
   from: string; to: string;
-  categoryId?: string; questionId?: string;
+  categoryId?: number; questionId?: number;
   curso?: string; turno?: string; unidade?: string;
   identified?: boolean;
-  limit?: number; minLen?: number;
-  signal?: AbortSignal;
 }) {
-  return api.get<WordcloudItem[]>('/dashboard/wordcloud', { params: p, signal: p.signal }).then(r => r.data);
+  return api.get(`/dashboard/wordcloud${qs(p)}`).then(r => r.data);
 }
-
-// --- NOVOS SERVICES (cole no final de dashboard.ts) ---
-
-// NPS (tendência)
-export const getNpsSeries = (p: { interval: 'day' | 'week' | 'month'; from: string; to: string }) =>
-  api.get('/dashboard/nps-series', { params: p }).then(r => r.data);
-
-// Volume de feedbacks (por período)
-export const getVolumeSeries = (p: { interval: 'day' | 'week' | 'month'; from: string; to: string }) =>
-  api.get('/dashboard/volume-series', { params: p }).then(r => r.data);
-
-// Alertas por área (críticos ≤3 vs ok ≥4)
-export const getAreasAlerts = (p: { limit?: number; from: string; to: string; categoryId?: string }) =>
-  api.get('/dashboard/areas-alerts', { params: p }).then(r => r.data);
-
-// Participação por horário (00..23)
-export const getHourly = (p: { from: string; to: string; categoryId?: string }) =>
-  api.get('/dashboard/hourly', { params: p }).then(r => r.data);
-
-// Piores perguntas (Top N por menor média)
-/*export const getWorstQuestions = (p: { limit?: number; from: string; to: string; categoryId?: string }) =>
-  api.get('/dashboard/questions-worst', { params: p }).then(r => r.data);*/
-
-export const getWorstQuestions = (p: {
-  limit?: number;
-  from?: string | Date;
-  to?: string | Date;
-  categoryId?: string;
-  categoryId2?: string;
-  identified?: boolean;
-}) =>
-  api
-    .get('/dashboard/questions-worst', {
-      params: {
-        limit: p.limit ?? 5,
-        from: p.from ? toIso(p.from) : undefined,
-        to: p.to ? toIso(p.to) : undefined,
-        categoryId: p.categoryId,
-        categoryId2: p.categoryId2,
-        identified: p.identified,
-      },
-    })
-    .then((r) => r.data);
-
-  // Série por período (linha)
-export const getSeries = (p: {
-  interval: 'day' | 'week' | 'month';
-  from: string;
-  to: string;
-  categoryId?: string;
-  categoryId2?: string;
-  identified?: boolean;
-}) => api.get('/dashboard/series', { params: p }).then(r => r.data);
-
-// Heatmap tópicos × semana
-export const getTopicsHeatmap = (p: {
-  from: string;
-  to: string;
-  categoryId?: string;
-  limit?: number;
-}) => api.get('/dashboard/topics-heatmap', { params: p }).then(r => r.data);

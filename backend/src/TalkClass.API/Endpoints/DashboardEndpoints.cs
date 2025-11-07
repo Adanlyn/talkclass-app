@@ -57,25 +57,38 @@ public static class DashboardEndpoints
 
         // ---- Série temporal: média de notas por dia/semana
         // ---- Série temporal: média de notas por dia/semana (sem DateTrunc)
-       api.MapGet("/dashboard/series", async (
+     // ---- Série temporal: média de notas por dia/semana (com from/to opcionais e filtro 'identified')
+api.MapGet("/dashboard/series", async (
     AppDbContext db,
     string interval,
-    DateTime from,
-    DateTime to,
+    DateTime? from,
+    DateTime? to,
     Guid? categoryId,
     Guid? categoryId2,
     bool? identified) =>
 {
+    // Normaliza intervalo e evita mix de DateTimeKind
+    DateTime AsUtc(DateTime dt) => dt.Kind switch
+    {
+        DateTimeKind.Utc   => dt,
+        DateTimeKind.Local => dt.ToUniversalTime(),
+        _                  => DateTime.SpecifyKind(dt, DateTimeKind.Utc)
+    };
+
+    var inicio = AsUtc(((from ?? DateTime.UtcNow.AddDays(-30)).Date));
+    var fim    = AsUtc(((to   ?? DateTime.UtcNow).Date.AddDays(1).AddTicks(-1)));
+
     var q = db.FeedbackRespostas
-        .Where(r => r.ValorNota != null && r.Feedback.CriadoEm >= from && r.Feedback.CriadoEm <= to);
+        .Where(r => r.ValorNota != null &&
+                    r.Feedback.CriadoEm >= inicio &&
+                    r.Feedback.CriadoEm <= fim);
 
     if (identified == true)
-{
-    q = q.Where(r =>
-        (!string.IsNullOrEmpty(r.Feedback.NomeIdentificado)) ||
-        (!string.IsNullOrEmpty(r.Feedback.ContatoIdentificado))
-    );
-}
+    {
+        q = q.Where(r =>
+            !string.IsNullOrEmpty(r.Feedback.NomeIdentificado) ||
+            !string.IsNullOrEmpty(r.Feedback.ContatoIdentificado));
+    }
 
     if (categoryId.HasValue)
         q = q.Where(r => r.Feedback.CategoriaId == categoryId.Value);
@@ -83,31 +96,35 @@ public static class DashboardEndpoints
     if (categoryId2.HasValue)
         q = q.Where(r => r.Feedback.CategoriaId == categoryId2.Value);
 
-    // materializa só o que precisamos
     var rows = await q
         .Select(r => new { r.ValorNota, r.Feedback.CriadoEm })
         .AsNoTracking()
         .ToListAsync();
 
-    DateTime Bucket(DateTime dt) => interval switch
+    DateTime Bucket(DateTime dt) => (interval?.ToLowerInvariant()) switch
     {
         "week"  => dt.Date.AddDays(-(((int)dt.DayOfWeek + 6) % 7)), // segunda
         "month" => new DateTime(dt.Year, dt.Month, 1),
         _       => dt.Date
     };
 
-    var grouped = rows.GroupBy(r => Bucket(r.CriadoEm))
+    var grouped = rows
+        .GroupBy(r => Bucket(r.CriadoEm))
         .OrderBy(g => g.Key)
         .Select(g =>
         {
-            var notas = g.Where(x => x.ValorNota.HasValue).Select(x => (double)x.ValorNota!.Value).ToList();
-            var media = notas.Count > 0 ? notas.Average() : 0.0;   // <- proteção
-            return new { bucket = g.Key, media, count = g.Count() };
+            var notas = g.Where(x => x.ValorNota.HasValue)
+                         .Select(x => (double)x.ValorNota!.Value)
+                         .ToList();
+
+            var media = notas.Count > 0 ? notas.Average() : 0.0;
+            return new { bucket = g.Key, avg = Math.Round(media, 2), count = g.Count() };
         })
         .ToList();
 
     return Results.Ok(grouped);
 });
+
 
         // ---- Distribuição de notas (1..10)
         g.MapGet("/distribution", async (DateTime? from, DateTime? to, Guid? categoryId, AppDbContext db) =>
@@ -617,6 +634,7 @@ var end   = AsUtc(endLocal.Date.AddDays(1).AddTicks(-1));       // 23:59:59.9999
 
     return Results.Ok(data);
 });
+// ===== Categorias (lista leve p/ filtros) =====
 
         return api;
     }

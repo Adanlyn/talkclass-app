@@ -126,6 +126,8 @@
   border: 1px solid rgba(0,0,0,.06);
   box-shadow: 0 8px 20px rgba(0,0,0,.08);
   border-radius: var(--mantine-radius-md);
+  overflow: visible;
+
 }
 
 .cardKpi {
@@ -193,4 +195,19 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.filtersBar {
+  position: sticky;
+  top: 56px;                /* ajuste se seu Header tiver outra altura */
+  z-index: 50;
+  background: var(--mantine-color-body);
+  border-bottom: 1px solid var(--mantine-color-gray-3);
+}
+
+:global(.mantine-Select-dropdown),
+:global(.mantine-Popover-dropdown),
+:global(.mantine-DatePicker-dropdown),
+:global(.mantine-DatesProvider-dropdown) {
+  z-index: 600;
 }

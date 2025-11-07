@@ -10,7 +10,8 @@ import {
   Text,
   Title,
   Loader,
-  Alert
+  Alert,
+  Select
 } from '@mantine/core';
 
 import {
@@ -50,7 +51,9 @@ import {
 
 import {
   useMemo,
-  useRef
+  useRef,
+  useState,
+  useEffect
 } from 'react';
 
 import '../../chart';
@@ -58,6 +61,10 @@ import { DashboardFiltersProvider } from '../../state/dashboardFilters';
 import DashboardFilters from '../../components/DashboardFilters';
 import { useDashboardFilters } from '../../state/dashboardFilters';
 import type { ChartOptions } from 'chart.js';
+import { api } from '../../services/api';
+import { getPublicCategories } from '../../services/categories';
+
+
 
 // Alturas padronizadas para os cards de gráfico
 const CH = {
@@ -110,12 +117,55 @@ function ErrorState({ message, onRetry }: { message?: string; onRetry: () => voi
 }
 
 
+export function OverviewFilters() {
+  // 1) buscar categorias
+  const { data: cats = [], isLoading } = useQuery({
+    queryKey: ['categories-public'],
+    queryFn: getPublicCategories,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // 2) converter para { value, label }
+  const options = cats.map(c => ({ value: String(c.id), label: c.nome }));
+
+  // 3) estado controlado do filtro
+  const [categoryId, setCategoryId] = useState<string | null>(null);
+
+  return (
+    <Select
+      label="Categoria"
+      placeholder="Digite para buscar"
+      searchable
+      clearable
+      data={options}                // << precisa ter value/label
+      value={categoryId}            // string | null
+      onChange={setCategoryId}      // já recebe string | null
+      nothingFound={isLoading ? 'Carregando...' : 'Sem resultados'}
+      maxDropdownHeight={280}
+      filter={(value, item) =>
+        item.label?.toLowerCase().includes(value.toLowerCase().trim()) ?? false
+      }
+    />
+  );
+}
+
 function OverviewInner() {
   useAdminTitle('Visão geral');
   const nav = useNavigate();
 
   // ===== Filtros globais do dashboard =====
-  const { value: F } = useDashboardFilters();
+const { value: F, setValue } = useDashboardFilters();
+// chaves-padrão para invalidar/recarregar quando qualquer filtro mudar
+const FK = [
+  F.from, F.to,
+  F.categoryId, F.questionId,
+  F.curso, F.turno, F.unidade,
+  F.compareCategoryId,
+  F.identified
+] as const;
+
+
+
 
   // ===== Opções padrão das queries =====
   const qOpts = { retry: 0, refetchOnWindowFocus: false as const, staleTime: 60_000 };
@@ -128,45 +178,79 @@ function OverviewInner() {
   const from12w = useMemo(() => new Date(nowRef.current.getTime() - 84 * 24 * 60 * 60 * 1000).toISOString(), []);
 
   // ===== Opções padrão das queries
-  const commonOpts = { retry: 0, refetchOnWindowFocus: false as const, staleTime: 60_000 };
 
   // KPIs
-  const {
-    data: kpis, isLoading: loadingKpis, isError: errorKpis, error: kpisErr, refetch: refetchKpis
-  } = useQuery({
-    queryKey: ['kpis', F.from, F.to, F.categoryId ?? 'all'],
-    queryFn: () => getKpis({ from: F.from, to: F.to, categoryId: F.categoryId ?? undefined }),
-    ...commonOpts,
+const { data: kpis, isLoading: loadingKpis, isError: errorKpis, error: kpisErr, refetch: refetchKpis } =
+  useQuery({
+    queryKey: ['kpis', ...FK],
+    queryFn: () => getKpis({
+      from: F.from, to: F.to,
+      categoryId: F.categoryId ?? undefined,
+      questionId: F.questionId ?? undefined,
+      curso: F.curso ?? undefined,
+      turno: F.turno ?? undefined,
+      unidade: F.unidade ?? undefined,
+      identified: F.identified ? true : undefined
+,
+    }),
+    ...qOpts,
   });
 
+
   // Série temporal
-  const {
-    data: series, isLoading: loadingSeries, isError: errorSeries, error: seriesErr, refetch: refetchSeries
-  } = useQuery({
-    queryKey: ['series', 'week', F.from, F.to, F.categoryId ?? 'all'],
-    queryFn: () => getSeries({ interval: 'week', from: F.from, to: F.to, categoryId: F.categoryId ?? undefined }),
-    ...commonOpts,
+const { data: series, isLoading: loadingSeries, isError: errorSeries, error: seriesErr, refetch: refetchSeries } =
+  useQuery({
+    queryKey: ['series', 'week', ...FK],
+    queryFn: () => getSeries({
+      interval: 'week',
+      from: F.from, to: F.to,
+      categoryId: F.categoryId ?? undefined,
+      questionId: F.questionId ?? undefined,
+      curso: F.curso ?? undefined,
+      turno: F.turno ?? undefined,
+      unidade: F.unidade ?? undefined,
+      identified: F.identified ? true : undefined
+,
+    }),
+    ...qOpts,
   });
 
   // Distribuição de notas
-  const {
-    data: dist, isLoading: loadingDist, isError: errorDist, error: distErr, refetch: refetchDist
-  } = useQuery({
-    queryKey: ['distribution', F.from, F.to, F.categoryId ?? 'all'],
-    queryFn: () => getDistribution({ from: F.from, to: F.to, categoryId: F.categoryId ?? undefined }),
-
-    // Top áreas
-    ...commonOpts,
+const { data: dist, isLoading: loadingDist, isError: errorDist, error: distErr, refetch: refetchDist } =
+  useQuery({
+    queryKey: ['distribution', ...FK],
+    queryFn: () => getDistribution({
+      from: F.from, to: F.to,
+      categoryId: F.categoryId ?? undefined,
+      questionId: F.questionId ?? undefined,
+      curso: F.curso ?? undefined,
+      turno: F.turno ?? undefined,
+      unidade: F.unidade ?? undefined,
+      identified: F.identified ? true : undefined
+,
+    }),
+    ...qOpts,
   });
+
 
   // Top áreas
-  const {
-    data: topAreas, isLoading: loadingTop, isError: errorTop, error: topErr, refetch: refetchTop
-  } = useQuery({
-    queryKey: ['top-areas', 5, F.from, F.to],
-    queryFn: () => getTopAreas({ limit: 5, from: F.from, to: F.to, categoryId: F.categoryId ?? undefined }),
-    ...commonOpts,
+const { data: topAreas, isLoading: loadingTop, isError: errorTop, error: topErr, refetch: refetchTop } =
+  useQuery({
+    queryKey: ['top-areas', 5, ...FK],
+    queryFn: () => getTopAreas({
+      limit: 5,
+      from: F.from, to: F.to,
+      categoryId: F.categoryId ?? undefined,
+      questionId: F.questionId ?? undefined,
+      curso: F.curso ?? undefined,
+      turno: F.turno ?? undefined,
+      unidade: F.unidade ?? undefined,
+      identified: F.identified ? true : undefined
+,
+    }),
+    ...qOpts,
   });
+
 
   // ===== Dados para os gráficos
   const kpiCards = [
@@ -193,55 +277,140 @@ function OverviewInner() {
   const noTop = !loadingTop && !errorTop && (topAreas?.length ?? 0) === 0;
 
   // --- NPS série (linha) + Volume (linha)
-  const qNpsA = useQuery({
-    queryKey: ['nps-series', 'week', F.categoryId ?? 'all', F.from, F.to],
-    queryFn: () => getNpsSeries({ interval: 'week', from: F.from, to: F.to }),
-    ...qOpts,
-  });
-  const qNpsB = useQuery({
-    queryKey: ['nps-series', 'week', F.compareCategoryId ?? 'none', F.from, F.to],
-    queryFn: () => getNpsSeries({ interval: 'week', from: F.from, to: F.to }),
-    enabled: !!F.compareCategoryId,
-    ...qOpts,
-  });
+const qNpsA = useQuery({
+  queryKey: ['nps-series', 'week', 'compare', F.compareCategoryId ?? null, ...FK],
+  queryFn: () => getNpsSeries({
+    interval: 'week',
+    from: F.from, to: F.to,
+    categoryId: F.categoryId ?? undefined,
+    questionId: F.questionId ?? undefined,
+    curso: F.curso ?? undefined,
+    turno: F.turno ?? undefined,
+    unidade: F.unidade ?? undefined,
+    identified: F.identified ? true : undefined
+,
+  }),
+  ...qOpts,
+});
 
-  const qVol = useQuery({
-    queryKey: ['volume-series', 'day', F.from, F.to],
-    queryFn: () => getVolumeSeries({ interval: 'day', from: F.from, to: F.to }),
-    ...qOpts,
-  });
+const qNpsB = useQuery({
+  queryKey: ['nps-series', 'week', 'compare', F.compareCategoryId ?? null, ...FK],
+  queryFn: () => getNpsSeries({
+    interval: 'week',
+    from: F.from, to: F.to,
+    categoryId: F.compareCategoryId ?? undefined, // comparação usa o compareCategoryId
+    questionId: F.questionId ?? undefined,
+    curso: F.curso ?? undefined,
+    turno: F.turno ?? undefined,
+    unidade: F.unidade ?? undefined,
+    identified: F.identified ? true : undefined
+,
+  }),
+  enabled: !!F.compareCategoryId,
+  ...qOpts,
+});
+
+const qVol = useQuery({
+  queryKey: ['volume-series', 'day', ...FK],
+  queryFn: () => getVolumeSeries({
+    interval: 'day',
+    from: F.from, to: F.to,
+    categoryId: F.categoryId ?? undefined,
+    questionId: F.questionId ?? undefined,
+    curso: F.curso ?? undefined,
+    turno: F.turno ?? undefined,
+    unidade: F.unidade ?? undefined,
+    identified: F.identified ? true : undefined
+,
+  }),
+  ...qOpts,
+});
+
 
   // --- Polaridade por tópico (barras empilhadas) + Heatmap (stacked por semana)
-  const qPol = useQuery({
-    queryKey: ['topics-polarity', F.from, F.to],
-    queryFn: () => getTopicsPolarity({ from: F.from, to: F.to }),
-    ...qOpts,
-  });
+const qPol = useQuery({
+  queryKey: ['topics-polarity', ...FK],
+  queryFn: () => getTopicsPolarity({
+    from: F.from, to: F.to,
+    categoryId: F.categoryId ?? undefined,
+    questionId: F.questionId ?? undefined,
+    curso: F.curso ?? undefined,
+    turno: F.turno ?? undefined,
+    unidade: F.unidade ?? undefined,
+    identified: F.identified ? true : undefined
+,
+  }),
+  ...qOpts,
+});
 
-  const qHeat = useQuery({
-    queryKey: ['topics-heatmap', F.from, F.to],
-    queryFn: () => getTopicsHeatmap({ from: F.from, to: F.to, categoryId: F.categoryId ?? undefined, top: 6 }),
-    ...qOpts,
-  });
+
+const qHeat = useQuery({
+  queryKey: ['topics-heatmap', 6, ...FK],
+  queryFn: () => getTopicsHeatmap({
+    top: 6,
+    from: F.from, to: F.to,
+    categoryId: F.categoryId ?? undefined,
+    questionId: F.questionId ?? undefined,
+    curso: F.curso ?? undefined,
+    turno: F.turno ?? undefined,
+    unidade: F.unidade ?? undefined,
+    identified: F.identified ? true : undefined
+,
+  }),
+  ...qOpts,
+});
+
 
   // --- Piores perguntas (tabela)
-  const qWorst = useQuery({
-    queryKey: ['questions-worst', 5, F.from, F.to],
-    queryFn: () => getWorstQuestions({ limit: 5, from: F.from, to: F.to }),
-    ...qOpts,
-  });
+const qWorst = useQuery({
+  queryKey: ['questions-worst', 5, ...FK],
+  queryFn: () => getWorstQuestions({
+    limit: 5,
+    from: F.from, to: F.to,
+    categoryId: F.categoryId ?? undefined,
+    questionId: F.questionId ?? undefined,
+    curso: F.curso ?? undefined,
+    turno: F.turno ?? undefined,
+    unidade: F.unidade ?? undefined,
+    identified: F.identified ? true : undefined
+,
+  }),
+  ...qOpts,
+});
 
   // --- Alertas por área (empilhado) + Horário (0..23)
-  const qAlerts = useQuery({
-    queryKey: ['areas-alerts', 8, F.from, F.to],
-    queryFn: () => getAreasAlerts({ limit: 8, from: F.from, to: F.to }),
-    ...qOpts,
-  });
-  const qHourly = useQuery({
-    queryKey: ['hourly', F.from, F.to],
-    queryFn: () => getHourly({ from: F.from, to: F.to }),
-    ...qOpts,
-  });
+const qAlerts = useQuery({
+  queryKey: ['areas-alerts', 8, ...FK],
+  queryFn: () => getAreasAlerts({
+    limit: 8,
+    from: F.from, to: F.to,
+    categoryId: F.categoryId ?? undefined,
+    questionId: F.questionId ?? undefined,
+    curso: F.curso ?? undefined,
+    turno: F.turno ?? undefined,
+    unidade: F.unidade ?? undefined,
+    identified: F.identified ? true : undefined
+,
+  }),
+  ...qOpts,
+});
+
+
+const qHourly = useQuery({
+  queryKey: ['hourly', ...FK],
+  queryFn: () => getHourly({
+    from: F.from, to: F.to,
+    categoryId: F.categoryId ?? undefined,
+    questionId: F.questionId ?? undefined,
+    curso: F.curso ?? undefined,
+    turno: F.turno ?? undefined,
+    unidade: F.unidade ?? undefined,
+    identified: F.identified ? true : undefined
+,
+  }),
+  ...qOpts,
+});
+
 
   // --- Boxplot (por curso/turno) e Wordcloud (tags)
   const qBox = useQuery({
@@ -254,7 +423,8 @@ function OverviewInner() {
       curso: F.curso ?? undefined,
       turno: F.turno ?? undefined,
       unidade: F.unidade ?? undefined,
-      identified: F.identified ?? undefined,
+      identified: F.identified ? true : undefined
+,
     }),
     ...qOpts,
   });
@@ -769,8 +939,14 @@ function OverviewInner() {
 export default function Overview() {
   return (
     <DashboardFiltersProvider>
-      <DashboardFilters />
-      <OverviewInner />
-    </DashboardFiltersProvider>
+  <div
+    className={classes.filtersBar}
+    style={{ position: 'sticky', top: 0, zIndex: 1200 }}
+  >
+    <DashboardFilters />
+  </div>
+  <OverviewInner />
+</DashboardFiltersProvider>
+
   );
 }

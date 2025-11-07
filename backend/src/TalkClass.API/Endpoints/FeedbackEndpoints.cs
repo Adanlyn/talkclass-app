@@ -219,23 +219,7 @@ public static class FeedbackEndpoints
         var group = app.MapGroup("/api/categorias");
 
         // GET /api/categorias/public
-        group.MapGet("/public", async (AppDbContext db) =>
-        {
-            var cats = await db.Categorias
-                .AsNoTracking()
-                .Where(c => c.Ativa)
-                .OrderBy(c => c.Ordem)
-                .Select(c => new
-                {
-                    id = c.Id,
-                    nome = c.Nome,
-                    descricao = c.Descricao,
-                    ordem = c.Ordem
-                })
-                .ToListAsync();
-
-            return Results.Ok(cats);
-        });
+        
 
         // GET /api/categorias/{id}/perguntas (oficial)
         group.MapGet("/{id:guid}/perguntas", async (Guid id, AppDbContext db) =>
@@ -261,7 +245,6 @@ public static class FeedbackEndpoints
             return Results.Ok(perguntas);
         });
 
-        // (Opcional) Alias legado: GET /api/categorias/{id}/perguntas/public
         group.MapGet("/{id:guid}/perguntas/public", async (Guid id, AppDbContext db) =>
         {
             var perguntas = await db.Perguntas

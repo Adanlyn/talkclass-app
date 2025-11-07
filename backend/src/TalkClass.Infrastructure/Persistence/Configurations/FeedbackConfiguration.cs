@@ -20,11 +20,11 @@ public class FeedbackConfiguration : IEntityTypeConfiguration<Feedback>
 
         // novos campos opcionais:
         b.Property(x => x.NomeIdentificado)
-            .HasColumnName("nomeidentificado")
+            .HasColumnName("NomeIdentificado")
             .HasMaxLength(120);
 
         b.Property(x => x.ContatoIdentificado)
-            .HasColumnName("contatoidentificado")
+            .HasColumnName("ContatoIdentificado")
             .HasMaxLength(160);
 
         b.HasOne(x => x.Categoria)

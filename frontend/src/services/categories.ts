@@ -1,11 +1,20 @@
 // frontend/src/services/categories.ts
-import api from '../services/api';
+import {api} from '../services/api';
 
-export type CategoryLite = { id: string; nome: string };
-export async function getCategoriesLite() {
-  const r = await api.get('/api/categories', { params: { onlyActive: true, pageSize: 200 }});
-  // adapte ao seu shape de retorno
-  return (r.data.items ?? r.data ?? []).map((c: any) => ({ id: c.id ?? c.Id, nome: c.nome ?? c.Nome })) as CategoryLite[];
+export type PublicCategory = { id: string; nome: string };
+
+export async function getPublicCategories(): Promise<PublicCategory[]> {
+  const res = await api.get('/categories/public'); 
+  return res.data; 
+}
+
+
+export async function fetchCategoryOptions() {
+  const categories = await getPublicCategories();
+  return categories.map((c) => ({
+    value: String(c.id),
+    label: c.nome,
+  }));
 }
 
 

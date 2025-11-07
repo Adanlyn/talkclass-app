@@ -1,23 +1,22 @@
+//frontend\src\components\DashboardFilters.tsx
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Checkbox, Group, Select, SegmentedControl } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useDashboardFilters } from '../state/dashboardFilters';
-import { getCategoriesLite } from '../services/categories';
+import { getPublicCategories } from '../services/categories';
+
 import { IconAdjustments, IconX } from '@tabler/icons-react';
 
 export default function DashboardFilters() {
   const { value, set, reset } = useDashboardFilters();
+  
   const [range, setRange] = useState<[Date | null, Date | null]>([
     new Date(value.from), new Date(value.to)
   ]);
   const [preset, setPreset] = useState<'7'|'30'|'90'|'custom'>('30');
-  const [cats, setCats] = useState<{value:string,label:string}[]>([]);
+const [cats, setCats] = useState<{ value: string; label: string }[]>([]);
 
-  useEffect(() => {
-    getCategoriesLite().then(list =>
-      setCats(list.map(c => ({ value: c.id, label: c.nome })))
-    ).catch(() => setCats([]));
-  }, []);
+
 
   // aplica preset -> datas
   useEffect(() => {
@@ -36,10 +35,31 @@ export default function DashboardFilters() {
     set({ from: range[0].toISOString(), to: range[1].toISOString() });
   }, [range]);
 
+useEffect(() => {
+  let mounted = true;
+
+  getPublicCategories()
+    .then(list => {
+      if (!mounted) return;
+
+      const opts = list.map(c => ({ value: String(c.id), label: c.nome }));
+      console.debug('CATS OPTIONS =>', opts); // agora existe
+      setCats(opts);
+    })
+    .catch(err => {
+      console.error('PUBLIC CATS ERR:', err);
+      if (mounted) setCats([]);
+    });
+
+  return () => { mounted = false; };
+}, []);
+
+
+
   const clearCompare = () => set({ compareCategoryId: null });
 
   return (
-    <Group wrap="wrap" gap="md" mb="md">
+    <Group gap="md" mt="xs" wrap="wrap">
       <IconAdjustments size={18} />
 
       <SegmentedControl
@@ -57,29 +77,38 @@ export default function DashboardFilters() {
         type="range"
         value={range}
         onChange={(v) => { setPreset('custom'); setRange(v as any); }}
+        popoverProps={{ withinPortal: true }} 
         maw={380}
       />
 
-      <Select
-        label="Categoria"
-        placeholder="Todas"
-        data={cats}
-        value={value.categoryId ?? null}
-        onChange={(v) => set({ categoryId: v ?? null })}
-        clearable
-        maw={260}
-      />
+<Select
+  label="Categoria"
+  placeholder={`Todas${cats.length ? ` • ${cats.length}` : ''}`}
+  data={cats}                             // [{ value, label }]
+  value={value.categoryId ?? null}
+  onChange={(v) => set({ categoryId: v ?? null, compareCategoryId: null })}
+  searchable
+  clearable
+  nothingFoundMessage={cats.length ? 'Sem resultados' : 'Carregando...'}
+  comboboxProps={{ withinPortal: true, zIndex: 10000 }}
+  w={240}
+/>
 
-      <Select
-        label="Comparar com"
-        placeholder="(opcional)"
-        data={cats.filter(c => c.value !== (value.categoryId ?? ''))}
-        value={value.compareCategoryId ?? null}
-        onChange={(v) => set({ compareCategoryId: v ?? null })}
-        rightSection={value.compareCategoryId ? <IconX size={14} onClick={clearCompare} /> : null}
-        clearable
-        maw={260}
-      />
+<Select
+  label="Comparar com"
+  placeholder="(opcional)"
+  data={cats}
+  value={value.compareCategoryId ?? null}
+  onChange={(v) => set({ compareCategoryId: v ?? null })}
+  searchable
+  clearable
+  disabled={!value.categoryId}
+  nothingFoundMessage={cats.length ? 'Sem resultados' : 'Carregando...'}
+  comboboxProps={{ withinPortal: true, zIndex: 10000 }}
+  w={240}
+/>
+
+
 
       {/* Campos extras (habilite quando tiver dados) */}
       {/* <Select label="Pergunta" .../> */}
@@ -87,11 +116,12 @@ export default function DashboardFilters() {
       {/* <Select label="Turno" .../> */}
       {/* <Select label="Unidade" .../> */}
 
-      <Checkbox
-        label="Somente identificados"
-        checked={!!value.identified}
-        onChange={(e) => set({ identified: e.currentTarget.checked ? true : null })}
-      />
+  <Checkbox
+    label="Somente identificados"
+    checked={!!value.identified}
+    onChange={(e) => set({ identified: e.currentTarget.checked })}
+    styles={{ root: { alignSelf: 'end' } }}
+  />
 
       <Button variant="subtle" onClick={reset}>Limpar</Button>
     </Group>
