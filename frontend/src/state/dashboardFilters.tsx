@@ -5,7 +5,6 @@ export type FiltersState = {
   from: string;         // ISO
   to: string;           // ISO
   categoryId?: string | null;
-  compareCategoryId?: string | null; // 2º filtro opcional
   questionId?: string | null;
   curso?: string | null;
   turno?: string | null;
@@ -21,7 +20,6 @@ const defaultState: FiltersState = {
   from: iso(minusDays(30)),
   to: iso(today),
   categoryId: null,
-  compareCategoryId: null,
   questionId: null,
   curso: null,
   turno: null,

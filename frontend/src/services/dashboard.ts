@@ -46,12 +46,6 @@ export type BoxplotRow = {
   outliers: number[];
 };
 
-// Wordcloud
-export type WordcloudItem = { word: string; count: number };
-
-const toIso = (d: string | Date) =>
-  new Date(d).toISOString();
-
 // ====== SERVICES  ======
 
 // KPIs (header)
@@ -129,16 +123,15 @@ export function getTopicsPolarity(p: {
 }
 
 // Heatmap Tópicos × Semana (empilhado)
-export function getTopicsHeatmap(p: {
-  limit?: number; // ou top
-  from: string; to: string;
-  categoryId?: number; questionId?: number;
-  curso?: string; turno?: string; unidade?: string;
-  identified?: boolean;
+export async function getTopicsHeatmap(params: {
+  from?: string;
+  to?: string;
+  categoryId?: string;
+  top?: number;
 }) {
-  // compatibilidade: se vier top, mapeia para limit
-  const payload = { ...p, limit: p.limit ?? (p as any).top };
-  return api.get(`/dashboard/topics-heatmap${qs(payload)}`).then(r => r.data);
+  const { data } = await api.get('/dashboard/topics-heatmap', { params });
+  // data esperado: Array<{ week: string; topic: string; total: number }>
+  return data;
 }
 
 // Piores perguntas (Top 5)
@@ -183,14 +176,41 @@ export function getBoxplotNotas(p: {
 }) {
   return api.get(`/dashboard/boxplot-notas${qs(p)}`).then(r => r.data);
 }
+export type WordsHeatRow = {
+  week: string;
+  categoryId: string | null;
+  word: string;
+  total: number;
+  rk: number;
+};
 
-// Wordcloud (positiva/negativa)
-export function getWordcloud(p: {
+// Ajuste: usar query params (axios monta e faz encode)
+export async function getWordsHeatmapByPolarity(opts: {
   polarity: 'pos' | 'neg';
-  from: string; to: string;
-  categoryId?: number; questionId?: number;
-  curso?: string; turno?: string; unidade?: string;
-  identified?: boolean;
+  top?: number;
+  from?: string | null;
+  to?: string | null;
+  categoryId?: string | null;
+  curso?: string | null;
+  turno?: string | null;
+  unidade?: string | null;
+  identified?: boolean | null;
 }) {
-  return api.get(`/dashboard/wordcloud${qs(p)}`).then(r => r.data);
+  const { polarity, top = 6, from, to, categoryId, curso, turno, unidade, identified } = opts;
+
+  const res = await api.get('/dashboard/words/heatmap', {
+    params: {
+      polarity,
+      top,
+      from: from ?? undefined,
+      to: to ?? undefined,
+      categoryId: categoryId ?? undefined,
+      curso: curso ?? undefined,
+      turno: turno ?? undefined,
+      unidade: unidade ?? undefined,
+      identified: identified ?? undefined,
+    },
+  });
+
+  return res.data;
 }

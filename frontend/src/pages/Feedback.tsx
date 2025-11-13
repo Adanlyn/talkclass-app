@@ -102,23 +102,32 @@ export default function Feedback() {
 
   // 2) Carrega perguntas da categoria ativa
   useEffect(() => {
-    if (!categoriaAtivaId) return;
-    setCarregandoPerguntas(true);
-    getPerguntasDaCategoria(categoriaAtivaId)
-      .then((qs) => {
-        setPerguntas(qs);
-        // valores padrão no form
-        const patch: Record<string, any> = {};
-        for (const p of qs) {
-          if (form.values[p.id] === undefined) {
-            patch[p.id] = p.tipo === TipoAvaliacao.Nota ? '3' : '';
-          }
+  if (!categoriaAtivaId) return;
+  setCarregandoPerguntas(true);
+
+  getPerguntasDaCategoria(categoriaAtivaId)
+    .then((qs) => {
+      const arr = Array.isArray(qs) ? qs : [];
+      setPerguntas(arr);
+
+      // valores padrão no form
+      const patch: Record<string, any> = {};
+      for (const p of arr) {
+        if (form.values[p.id] === undefined) {
+          patch[p.id] = p.tipo === TipoAvaliacao.Nota ? '3' : '';
         }
-        if (Object.keys(patch).length) form.setValues({ ...form.values, ...patch });
-      })
-      .finally(() => setCarregandoPerguntas(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categoriaAtivaId]);
+      }
+      if (Object.keys(patch).length) {
+        form.setValues({ ...form.values, ...patch });
+      }
+    })
+    .catch((e) => {
+      console.error('Erro ao carregar perguntas:', e);
+      setPerguntas([]); 
+    })
+    .finally(() => setCarregandoPerguntas(false));
+}, [categoriaAtivaId]);
+
 
   const categoriaAtiva = useMemo(
     () => categorias.find((c) => c.id === categoriaAtivaId) ?? null,

@@ -58,7 +58,6 @@ public static class CategoriesEndpoints
                     descricao = c.Descricao,
                     ordem = c.Ordem,
                     ativa = c.Ativa,
-                    criadoEm = c.CriadoEm,
                     perguntasCount = c.Perguntas.Count()
                 })
                 .ToListAsync();
@@ -89,7 +88,6 @@ public static class CategoriesEndpoints
                 Descricao = string.IsNullOrWhiteSpace(dto.Descricao) ? null : dto.Descricao.Trim(),
                 Ordem = 0,
                 Ativa = true,
-                CriadoEm = DateTime.UtcNow
             };
 
             db.Categorias.Add(cat);

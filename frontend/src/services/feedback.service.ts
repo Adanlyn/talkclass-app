@@ -1,5 +1,5 @@
 // src/services/feedback.service.ts
-import { api } from './api';
+import { publicApi, adminApi  } from './api';
 
 export type Categoria = {
   id: string;
@@ -23,14 +23,26 @@ export type Pergunta = {
 };
 
 export async function getCategorias() {
-  const { data } = await api.get<Categoria[]>('/categorias/public'); // <- sem /api
+  const { data } = await publicApi.get<Categoria[]>('/categories/public'); // <- sem /api
   return data;
 }
 
 export async function getPerguntasDaCategoria(categoriaId: string) {
-  const { data } = await api.get<Pergunta[]>(`/categorias/${categoriaId}/perguntas`);
-  return data;
+  const { data } = await publicApi.get<Pergunta[]>(
+    `/categorias/${categoriaId}/perguntas/public`
+  );
+  // garante conformidade do tipo
+  return (data ?? []).map(p => ({
+    id: p.id,
+    categoriaId: categoriaId,
+    enunciado: (p as any).enunciado ?? '',
+    tipo: Number((p as any).tipo),
+    ativa: true,
+    ordem: (p as any).ordem ?? 0,
+    opcoes: (p as any).opcoes?.map((o: any) => ({ id: o.id, texto: o.texto })) ?? []
+  }));
 }
+
 
 export type CreateFeedbackDto = {
   categoriaId: string;
@@ -48,7 +60,7 @@ export type CreateFeedbackDto = {
 };
 
 export async function createFeedback(dto: CreateFeedbackDto) {
-  await api.post('/feedbacks', dto);
+  await publicApi.post('/feedbacks', dto);
 }
 
 export type FeedbackListParams = {
@@ -75,11 +87,11 @@ export type FeedbackListItem = {
 };
 
 export async function listFeedbacks(p: FeedbackListParams) {
-  const { data } = await api.get('/feedbacks', { params: p });
+  const { data } = await adminApi.get('/feedbacks', { params: p });
   return data as { items: FeedbackListItem[]; total: number };
 }
 
 export async function getFeedbackDetail(id: string) {
-  const { data } = await api.get(`/feedbacks/${id}`);
+  const { data } = await adminApi.get(`/feedbacks/${id}`);
   return data; // retorna o JSON do endpoint
 }

@@ -198,11 +198,12 @@
 }
 
 .filtersBar {
-  position: sticky;
-  top: 56px;                /* ajuste se seu Header tiver outra altura */
-  z-index: 50;
-  background: var(--mantine-color-body);
-  border-bottom: 1px solid var(--mantine-color-gray-3);
+  position: static;
+  top: auto;
+  z-index: auto;
+  background: transparent;
+  border-bottom: none;
+  margin-bottom: 12px;
 }
 
 :global(.mantine-Select-dropdown),
@@ -211,3 +212,34 @@
 :global(.mantine-DatesProvider-dropdown) {
   z-index: 600;
 }
+
+.chartBox { position: relative; height: 300px; width: 100%; }
+.chartBox canvas { display: block; max-height: 100% !important; width: 100% !important; }
+@media (max-width:1024px){ .chartBox{ height:260px; } }
+@media (max-width:640px){ .chartBox{ height:220px; } }
+
+.filtersRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* padroniza alturas dos inputs Mantine dentro da barra */
+.filtersBar :where(.mantine-InputWrapper-root) { margin: 0; }
+.filtersBar :where(.mantine-Input-input,
+                   .mantine-DatePickerInput-input) { height: 38px; }
+
+/* SegmentedControl (7d/30d/etc) na mesma altura */
+.filtersBar :where(.mantine-SegmentedControl-root) { height: 38px; }
+.filtersBar :where(.mantine-SegmentedControl-control) { height: 38px; }
+
+/* Checkbox “Somente identificados” centralizado */
+.filtersBar :where(.mantine-Checkbox-root) {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* larguras mínimas para não “dançar” */
+.filtersBar .min-date { min-width: 320px; }
+.filtersBar .min-select { min-width: 220px; }

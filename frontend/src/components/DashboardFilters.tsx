@@ -6,6 +6,8 @@ import { useDashboardFilters } from '../state/dashboardFilters';
 import { getPublicCategories } from '../services/categories';
 
 import { IconAdjustments, IconX } from '@tabler/icons-react';
+import classes from '../pages/admin/Admin.module.css'; 
+
 
 export default function DashboardFilters() {
   const { value, set, reset } = useDashboardFilters();
@@ -54,12 +56,9 @@ useEffect(() => {
   return () => { mounted = false; };
 }, []);
 
-
-
-  const clearCompare = () => set({ compareCategoryId: null });
-
   return (
-    <Group gap="md" mt="xs" wrap="wrap">
+    <Group gap="md" mt="xs" wrap="wrap" w="100%" className={classes.filtersBar}>
+      <Group gap="md" wrap="wrap" align="center">
       <IconAdjustments size={18} />
 
       <SegmentedControl
@@ -67,7 +66,6 @@ useEffect(() => {
           { label: '7d', value: '7' },
           { label: '30d', value: '30' },
           { label: '90d', value: '90' },
-          { label: 'Custom', value: 'custom' },
         ]}
         value={preset}
         onChange={(v) => setPreset(v as any)}
@@ -78,44 +76,23 @@ useEffect(() => {
         value={range}
         onChange={(v) => { setPreset('custom'); setRange(v as any); }}
         popoverProps={{ withinPortal: true }} 
-        maw={380}
+         className="min-date" 
+
       />
 
 <Select
-  label="Categoria"
-  placeholder={`Todas${cats.length ? ` • ${cats.length}` : ''}`}
-  data={cats}                             // [{ value, label }]
+  placeholder={`Categorias${cats.length ? ` • ${cats.length}` : ''}`}
+  data={cats}                            
   value={value.categoryId ?? null}
-  onChange={(v) => set({ categoryId: v ?? null, compareCategoryId: null })}
+  onChange={(v) => set({ categoryId: v ?? null })}
   searchable
   clearable
   nothingFoundMessage={cats.length ? 'Sem resultados' : 'Carregando...'}
   comboboxProps={{ withinPortal: true, zIndex: 10000 }}
-  w={240}
+  className="min-select" 
 />
-
-<Select
-  label="Comparar com"
-  placeholder="(opcional)"
-  data={cats}
-  value={value.compareCategoryId ?? null}
-  onChange={(v) => set({ compareCategoryId: v ?? null })}
-  searchable
-  clearable
-  disabled={!value.categoryId}
-  nothingFoundMessage={cats.length ? 'Sem resultados' : 'Carregando...'}
-  comboboxProps={{ withinPortal: true, zIndex: 10000 }}
-  w={240}
-/>
-
-
-
-      {/* Campos extras (habilite quando tiver dados) */}
-      {/* <Select label="Pergunta" .../> */}
-      {/* <Select label="Curso" .../> */}
-      {/* <Select label="Turno" .../> */}
-      {/* <Select label="Unidade" .../> */}
-
+</Group>
+<Group gap="md" wrap="wrap" align="center" className={classes.filtersRight}>
   <Checkbox
     label="Somente identificados"
     checked={!!value.identified}
@@ -123,7 +100,7 @@ useEffect(() => {
     styles={{ root: { alignSelf: 'end' } }}
   />
 
-      <Button variant="subtle" onClick={reset}>Limpar</Button>
+    </Group>
     </Group>
   );
 }

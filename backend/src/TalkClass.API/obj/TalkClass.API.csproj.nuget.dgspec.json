@@ -13,6 +13,8 @@
         "packagesPath": "/root/.nuget/packages/",
         "outputPath": "/workspace/src/TalkClass.API/obj/",
         "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "CentralPackageTransitivePinningEnabled": true,
         "configFilePaths": [
           "/root/.nuget/NuGet/NuGet.Config"
         ],
@@ -55,68 +57,111 @@
           "dependencies": {
             "EFCore.NamingConventions": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.2, )",
+              "versionCentrallyManaged": true
             },
             "FluentValidation": {
               "target": "Package",
-              "version": "[12.0.0, )"
+              "version": "[12.0.0, )",
+              "versionCentrallyManaged": true
             },
             "FluentValidation.DependencyInjectionExtensions": {
               "target": "Package",
-              "version": "[12.0.0, )"
+              "version": "[12.0.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.8, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
-              "version": "[8.0.19, )"
+              "version": "[8.0.8, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.8, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.8, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.8, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.8, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Configuration": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Configuration.EnvironmentVariables": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Configuration.FileExtensions": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Configuration.Json": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[8.0.3, )",
+              "versionCentrallyManaged": true
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.2, )",
+              "versionCentrallyManaged": true
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.6.2, )"
+              "version": "[6.6.2, )",
+              "versionCentrallyManaged": true
             }
+          },
+          "centralPackageVersions": {
+            "BCrypt.Net-Next": "4.0.3",
+            "EFCore.NamingConventions": "8.0.2",
+            "FluentValidation": "12.0.0",
+            "FluentValidation.DependencyInjectionExtensions": "12.0.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.8",
+            "Microsoft.AspNetCore.OpenApi": "8.0.8",
+            "Microsoft.EntityFrameworkCore": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Abstractions": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Analyzers": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Design": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Relational": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Tools": "8.0.8",
+            "Microsoft.Extensions.Configuration": "8.0.0",
+            "Microsoft.Extensions.Configuration.EnvironmentVariables": "8.0.0",
+            "Microsoft.Extensions.Configuration.FileExtensions": "8.0.0",
+            "Microsoft.Extensions.Configuration.Json": "8.0.0",
+            "Microsoft.Extensions.FileProviders.Physical": "8.0.0",
+            "Npgsql": "8.0.3",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.2",
+            "Swashbuckle.AspNetCore": "6.6.2",
+            "System.IdentityModel.Tokens.Jwt": "8.14.0"
           },
           "imports": [
             "net461",
@@ -150,6 +195,8 @@
         "packagesPath": "/root/.nuget/packages/",
         "outputPath": "/workspace/src/TalkClass.Application/obj/",
         "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "CentralPackageTransitivePinningEnabled": true,
         "configFilePaths": [
           "/root/.nuget/NuGet/NuGet.Config"
         ],
@@ -186,12 +233,37 @@
           "dependencies": {
             "FluentValidation": {
               "target": "Package",
-              "version": "[12.0.0, )"
+              "version": "[12.0.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.8, )",
+              "versionCentrallyManaged": true
             }
+          },
+          "centralPackageVersions": {
+            "BCrypt.Net-Next": "4.0.3",
+            "EFCore.NamingConventions": "8.0.2",
+            "FluentValidation": "12.0.0",
+            "FluentValidation.DependencyInjectionExtensions": "12.0.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.8",
+            "Microsoft.AspNetCore.OpenApi": "8.0.8",
+            "Microsoft.EntityFrameworkCore": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Abstractions": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Analyzers": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Design": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Relational": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Tools": "8.0.8",
+            "Microsoft.Extensions.Configuration": "8.0.0",
+            "Microsoft.Extensions.Configuration.EnvironmentVariables": "8.0.0",
+            "Microsoft.Extensions.Configuration.FileExtensions": "8.0.0",
+            "Microsoft.Extensions.Configuration.Json": "8.0.0",
+            "Microsoft.Extensions.FileProviders.Physical": "8.0.0",
+            "Npgsql": "8.0.3",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.2",
+            "Swashbuckle.AspNetCore": "6.6.2",
+            "System.IdentityModel.Tokens.Jwt": "8.14.0"
           },
           "imports": [
             "net461",
@@ -222,6 +294,8 @@
         "packagesPath": "/root/.nuget/packages/",
         "outputPath": "/workspace/src/TalkClass.Domain/obj/",
         "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "CentralPackageTransitivePinningEnabled": true,
         "configFilePaths": [
           "/root/.nuget/NuGet/NuGet.Config"
         ],
@@ -251,6 +325,29 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "centralPackageVersions": {
+            "BCrypt.Net-Next": "4.0.3",
+            "EFCore.NamingConventions": "8.0.2",
+            "FluentValidation": "12.0.0",
+            "FluentValidation.DependencyInjectionExtensions": "12.0.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.8",
+            "Microsoft.AspNetCore.OpenApi": "8.0.8",
+            "Microsoft.EntityFrameworkCore": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Abstractions": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Analyzers": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Design": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Relational": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Tools": "8.0.8",
+            "Microsoft.Extensions.Configuration": "8.0.0",
+            "Microsoft.Extensions.Configuration.EnvironmentVariables": "8.0.0",
+            "Microsoft.Extensions.Configuration.FileExtensions": "8.0.0",
+            "Microsoft.Extensions.Configuration.Json": "8.0.0",
+            "Microsoft.Extensions.FileProviders.Physical": "8.0.0",
+            "Npgsql": "8.0.3",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.2",
+            "Swashbuckle.AspNetCore": "6.6.2",
+            "System.IdentityModel.Tokens.Jwt": "8.14.0"
+          },
           "imports": [
             "net461",
             "net462",
@@ -280,6 +377,8 @@
         "packagesPath": "/root/.nuget/packages/",
         "outputPath": "/workspace/src/TalkClass.Infrastructure/obj/",
         "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "CentralPackageTransitivePinningEnabled": true,
         "configFilePaths": [
           "/root/.nuget/NuGet/NuGet.Config"
         ],
@@ -319,54 +418,89 @@
           "dependencies": {
             "BCrypt.Net-Next": {
               "target": "Package",
-              "version": "[4.0.3, )"
+              "version": "[4.0.3, )",
+              "versionCentrallyManaged": true
             },
             "EFCore.NamingConventions": {
               "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.2, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.8, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore.Analyzers": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.8, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.8, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.8, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Configuration": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Configuration.EnvironmentVariables": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Configuration.FileExtensions": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.Extensions.Configuration.Json": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.2, )",
+              "versionCentrallyManaged": true
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
-              "version": "[8.14.0, )"
+              "version": "[8.14.0, )",
+              "versionCentrallyManaged": true
             }
+          },
+          "centralPackageVersions": {
+            "BCrypt.Net-Next": "4.0.3",
+            "EFCore.NamingConventions": "8.0.2",
+            "FluentValidation": "12.0.0",
+            "FluentValidation.DependencyInjectionExtensions": "12.0.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.8",
+            "Microsoft.AspNetCore.OpenApi": "8.0.8",
+            "Microsoft.EntityFrameworkCore": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Abstractions": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Analyzers": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Design": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Relational": "8.0.8",
+            "Microsoft.EntityFrameworkCore.Tools": "8.0.8",
+            "Microsoft.Extensions.Configuration": "8.0.0",
+            "Microsoft.Extensions.Configuration.EnvironmentVariables": "8.0.0",
+            "Microsoft.Extensions.Configuration.FileExtensions": "8.0.0",
+            "Microsoft.Extensions.Configuration.Json": "8.0.0",
+            "Microsoft.Extensions.FileProviders.Physical": "8.0.0",
+            "Npgsql": "8.0.3",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.2",
+            "Swashbuckle.AspNetCore": "6.6.2",
+            "System.IdentityModel.Tokens.Jwt": "8.14.0"
           },
           "imports": [
             "net461",

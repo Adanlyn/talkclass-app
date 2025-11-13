@@ -3,7 +3,9 @@ using TalkClass.Infrastructure.Persistence;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-
+using Npgsql;
+using NpgsqlTypes;
+using TalkClass.API.Dtos;
 
 
 namespace TalkClass.API.Endpoints;
@@ -54,76 +56,179 @@ public static class DashboardEndpoints
             return Results.Ok(new { nps, totalFeedbacks, areasComAlerta, totalAreas });
         });
 
-
-        // ---- Série temporal: média de notas por dia/semana
-        // ---- Série temporal: média de notas por dia/semana (sem DateTrunc)
-     // ---- Série temporal: média de notas por dia/semana (com from/to opcionais e filtro 'identified')
-api.MapGet("/dashboard/series", async (
-    AppDbContext db,
-    string interval,
+        api.MapGet("/dashboard/words/heatmap", async (
+    string polarity,
     DateTime? from,
     DateTime? to,
     Guid? categoryId,
-    Guid? categoryId2,
-    bool? identified) =>
+    int? top,
+    AppDbContext db) =>
 {
-    // Normaliza intervalo e evita mix de DateTimeKind
-    DateTime AsUtc(DateTime dt) => dt.Kind switch
-    {
-        DateTimeKind.Utc   => dt,
-        DateTimeKind.Local => dt.ToUniversalTime(),
-        _                  => DateTime.SpecifyKind(dt, DateTimeKind.Utc)
-    };
+    var view = polarity.Equals("neg", StringComparison.OrdinalIgnoreCase)
+        ? "tc_analytics.v_words_week_neg_top"
+        : "tc_analytics.v_words_week_pos_top";
 
-    var inicio = AsUtc(((from ?? DateTime.UtcNow.AddDays(-30)).Date));
-    var fim    = AsUtc(((to   ?? DateTime.UtcNow).Date.AddDays(1).AddTicks(-1)));
+    var take = top is > 0 ? top!.Value : 6;
 
-    var q = db.FeedbackRespostas
-        .Where(r => r.ValorNota != null &&
-                    r.Feedback.CriadoEm >= inicio &&
-                    r.Feedback.CriadoEm <= fim);
+    var sql = $@"
+      SELECT
+        week::date  AS ""Week"",
+        category_id AS ""CategoryId"",
+        word        AS ""Word"",
+        total       AS ""Total"",
+        rk          AS ""Rk""
+      FROM {view}
+      WHERE (@from IS NULL OR week >= date_trunc('week', @from::timestamptz))
+        AND (@to   IS NULL OR week  < date_trunc('week', @to::timestamptz) + interval '1 week')
+        AND (@categoryId IS NULL OR category_id = @categoryId)
+        AND rk <= @top;";
+var rows = await db.Database.SqlQueryRaw<WordHeatRow>(
+    sql,
+    new NpgsqlParameter("from",  (object?)from ?? DBNull.Value) { NpgsqlDbType = NpgsqlDbType.TimestampTz },
+    new NpgsqlParameter("to",    (object?)to   ?? DBNull.Value) { NpgsqlDbType = NpgsqlDbType.TimestampTz },
+    new NpgsqlParameter("categoryId", (object?)categoryId ?? DBNull.Value) { NpgsqlDbType = NpgsqlDbType.Uuid },
+    new NpgsqlParameter("top", take /* ou top */) { NpgsqlDbType = NpgsqlDbType.Integer }
+).ToListAsync();
 
-    if (identified == true)
-    {
-        q = q.Where(r =>
-            !string.IsNullOrEmpty(r.Feedback.NomeIdentificado) ||
-            !string.IsNullOrEmpty(r.Feedback.ContatoIdentificado));
-    }
 
-    if (categoryId.HasValue)
-        q = q.Where(r => r.Feedback.CategoriaId == categoryId.Value);
-
-    if (categoryId2.HasValue)
-        q = q.Where(r => r.Feedback.CategoriaId == categoryId2.Value);
-
-    var rows = await q
-        .Select(r => new { r.ValorNota, r.Feedback.CriadoEm })
-        .AsNoTracking()
-        .ToListAsync();
-
-    DateTime Bucket(DateTime dt) => (interval?.ToLowerInvariant()) switch
-    {
-        "week"  => dt.Date.AddDays(-(((int)dt.DayOfWeek + 6) % 7)), // segunda
-        "month" => new DateTime(dt.Year, dt.Month, 1),
-        _       => dt.Date
-    };
-
-    var grouped = rows
-        .GroupBy(r => Bucket(r.CriadoEm))
-        .OrderBy(g => g.Key)
-        .Select(g =>
-        {
-            var notas = g.Where(x => x.ValorNota.HasValue)
-                         .Select(x => (double)x.ValorNota!.Value)
-                         .ToList();
-
-            var media = notas.Count > 0 ? notas.Average() : 0.0;
-            return new { bucket = g.Key, avg = Math.Round(media, 2), count = g.Count() };
-        })
-        .ToList();
-
-    return Results.Ok(grouped);
+    return Results.Ok(rows);
 });
+
+
+g.MapGet("words-heatmap/pos", async (
+    DateTime? from,
+    DateTime? to,
+    Guid? categoryId,
+    AppDbContext db,
+    int top = 6
+) =>
+{
+    var view = "tc_analytics.v_words_week_pos_top";
+    var sql = @"
+      SELECT
+        week::date      AS ""Week"",
+        category_id     AS ""CategoryId"",
+        word            AS ""Word"",
+        total           AS ""Total"",
+        rk              AS ""Rk""
+      FROM tc_analytics.v_words_week_pos_top
+      WHERE (@from IS NULL OR week >= date_trunc('week', @from::timestamptz))
+        AND (@to   IS NULL OR week  < date_trunc('week', @to::timestamptz) + interval '1 week')
+        AND (@categoryId IS NULL OR category_id = @categoryId)
+        AND rk <= @top;";
+
+    var rows = await db.Database.SqlQueryRaw<WordHeatRow>(
+        sql,
+        new NpgsqlParameter("from", (object?)from ?? DBNull.Value) { NpgsqlDbType = NpgsqlDbType.TimestampTz },
+        new NpgsqlParameter("to", (object?)to ?? DBNull.Value) { NpgsqlDbType = NpgsqlDbType.TimestampTz },
+        new NpgsqlParameter("categoryId", (object?)categoryId ?? DBNull.Value) { NpgsqlDbType = NpgsqlDbType.Uuid },
+        new NpgsqlParameter("top", top) { NpgsqlDbType = NpgsqlDbType.Integer } // <-- AQUI
+    ).ToListAsync();
+
+    return Results.Ok(rows);
+});
+
+g.MapGet("words-heatmap/neg", async (
+    DateTime? from,
+    DateTime? to,
+    Guid? categoryId,
+    AppDbContext db,
+    int top = 6
+) =>
+{
+    var view = "tc_analytics.v_words_week_neg_top";
+    var sql = @"
+      SELECT
+        week::date      AS ""Week"",
+        category_id     AS ""CategoryId"",
+        word            AS ""Word"",
+        total           AS ""Total"",
+        rk              AS ""Rk""
+      FROM tc_analytics.v_words_week_neg_top
+      WHERE (@from IS NULL OR week >= date_trunc('week', @from::timestamptz))
+        AND (@to   IS NULL OR week  < date_trunc('week', @to::timestamptz) + interval '1 week')
+        AND (@categoryId IS NULL OR category_id = @categoryId)
+        AND rk <= @top;";
+
+    var rows = await db.Database.SqlQueryRaw<WordHeatRow>(
+        sql,
+        new NpgsqlParameter("from", (object?)from ?? DBNull.Value) { NpgsqlDbType = NpgsqlDbType.TimestampTz },
+        new NpgsqlParameter("to", (object?)to ?? DBNull.Value) { NpgsqlDbType = NpgsqlDbType.TimestampTz },
+        new NpgsqlParameter("categoryId", (object?)categoryId ?? DBNull.Value) { NpgsqlDbType = NpgsqlDbType.Uuid },
+        new NpgsqlParameter("top", top) { NpgsqlDbType = NpgsqlDbType.Integer } // <-- AQUI
+    ).ToListAsync();
+
+    return Results.Ok(rows);
+});
+
+
+
+        api.MapGet("/dashboard/series", async (
+            AppDbContext db,
+            string interval,
+            DateTime? from,
+            DateTime? to,
+            Guid? categoryId,
+            Guid? categoryId2,
+            bool? identified) =>
+        {
+            // Normaliza intervalo e evita mix de DateTimeKind
+            DateTime AsUtc(DateTime dt) => dt.Kind switch
+            {
+                DateTimeKind.Utc => dt,
+                DateTimeKind.Local => dt.ToUniversalTime(),
+                _ => DateTime.SpecifyKind(dt, DateTimeKind.Utc)
+            };
+
+            var inicio = AsUtc(((from ?? DateTime.UtcNow.AddDays(-30)).Date));
+            var fim = AsUtc(((to ?? DateTime.UtcNow).Date.AddDays(1).AddTicks(-1)));
+
+            var q = db.FeedbackRespostas
+                .Where(r => r.ValorNota != null &&
+                            r.Feedback.CriadoEm >= inicio &&
+                            r.Feedback.CriadoEm <= fim);
+
+            if (identified == true)
+            {
+                q = q.Where(r =>
+                    !string.IsNullOrEmpty(r.Feedback.NomeIdentificado) ||
+                    !string.IsNullOrEmpty(r.Feedback.ContatoIdentificado));
+            }
+
+            if (categoryId.HasValue)
+                q = q.Where(r => r.Feedback.CategoriaId == categoryId.Value);
+
+            if (categoryId2.HasValue)
+                q = q.Where(r => r.Feedback.CategoriaId == categoryId2.Value);
+
+            var rows = await q
+                .Select(r => new { r.ValorNota, r.Feedback.CriadoEm })
+                .AsNoTracking()
+                .ToListAsync();
+
+            DateTime Bucket(DateTime dt) => (interval?.ToLowerInvariant()) switch
+            {
+                "week" => dt.Date.AddDays(-(((int)dt.DayOfWeek + 6) % 7)), // segunda
+                "month" => new DateTime(dt.Year, dt.Month, 1),
+                _ => dt.Date
+            };
+
+            var grouped = rows
+                .GroupBy(r => Bucket(r.CriadoEm))
+                .OrderBy(g => g.Key)
+                .Select(g =>
+                {
+                    var notas = g.Where(x => x.ValorNota.HasValue)
+                                 .Select(x => (double)x.ValorNota!.Value)
+                                 .ToList();
+
+                    var media = notas.Count > 0 ? notas.Average() : 0.0;
+                    return new { bucket = g.Key, avg = Math.Round(media, 2), count = g.Count() };
+                })
+                .ToList();
+
+            return Results.Ok(grouped);
+        });
 
 
         // ---- Distribuição de notas (1..10)
@@ -317,62 +422,80 @@ api.MapGet("/dashboard/series", async (
     return Results.Ok(data);
 });
 
-       api.MapGet("/dashboard/topics-heatmap", async (
-    AppDbContext db,
-    DateTime from,
-    DateTime to,
-    Guid? categoryId,
-    int? limit) =>
-{
-    var lim = limit.GetValueOrDefault(6);
+        // /dashboard/topics-heatmap — keywords por semana vindas de ValorTexto (sem precisar de #)
+        api.MapGet("/dashboard/topics-heatmap", async (
+            AppDbContext db,
+            DateTime? from,
+            DateTime? to,
+            Guid? categoryId,
+            int? top,
+            int? limit) =>
+        {
+            // normaliza período
+            var inicio = (from ?? DateTime.UtcNow.AddDays(-30)).Date;
+            var fim = (to ?? DateTime.UtcNow).Date.AddDays(1).AddTicks(-1);
+            var topN = (top ?? limit ?? 6);
 
-    var baseQ = db.FeedbackRespostas
-        .Where(r => r.Feedback.CriadoEm >= from && r.Feedback.CriadoEm <= to)
-        .Where(r => r.ValorTexto != null || r.ValorNota != null);
+            // base: só respostas que tenham texto (e dentro do período)
+            var baseQ = db.FeedbackRespostas
+                .Where(r => r.Feedback.CriadoEm >= inicio && r.Feedback.CriadoEm <= fim)
+                .Where(r => r.ValorTexto != null && r.ValorTexto != "");
 
-    if (categoryId.HasValue)
-        baseQ = baseQ.Where(r => r.Feedback.CategoriaId == categoryId.Value);
+            if (categoryId.HasValue)
+                baseQ = baseQ.Where(r => r.Feedback.CategoriaId == categoryId.Value);
 
-    // Seleciona tópico (enunciado) + data
-    var itens = await baseQ
-        .Where(r => r.Pergunta != null) // proteção
-        .Select(r => new { Titulo = r.Pergunta!.Enunciado, Data = r.Feedback.CriadoEm })
-        .AsNoTracking()
-        .ToListAsync();
+            // traz para memória o mínimo necessário (texto + data)
+            var rows = await baseQ.AsNoTracking()
+                .Select(r => new { Texto = r.ValorTexto!, Dt = r.Feedback.CriadoEm })
+                .ToListAsync();
 
-    if (itens.Count == 0)
-        return Results.Ok(new { labels = Array.Empty<string>(), series = Array.Empty<object>() });
+            // helpers já existem na classe (Stopwords, TokenSplit, RemoveDiacritics)
+            static DateTime WeekBucket(DateTime d)
+                => d.Date.AddDays(-(((int)d.DayOfWeek + 6) % 7)); // segunda
 
-    DateTime WeekBucket(DateTime d) => d.Date.AddDays(-(((int)d.DayOfWeek + 6) % 7)); // segunda
+            // explode em (semana, keyword)
+            var wkKw = new Dictionary<(DateTime week, string kw), int>();
+            var kwTotals = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
-    // top N tópicos por volume
-    var topTopics = itens
-        .GroupBy(x => x.Titulo ?? "(Sem título)")
-        .OrderByDescending(g => g.Count())
-        .Take(lim)
-        .Select(g => g.Key)
-        .ToList();
+            foreach (var row in rows)
+            {
+                var week = WeekBucket(row.Dt);
 
-    var semanas = itens
-        .Select(x => WeekBucket(x.Data))
-        .Distinct()
-        .OrderBy(x => x)
-        .ToList();
+                var text = RemoveDiacritics(row.Texto.ToLowerInvariant());
+                foreach (var raw in TokenSplit.Split(text))
+                {
+                    var w = raw.Trim();
+                    if (w.Length < 4) continue;           // ignora muito curtas
+                    if (int.TryParse(w, out _)) continue;  // ignora números
+                    if (Stopwords.Contains(w)) continue;   // ignora stopwords
 
-    var labels = semanas.Select(s => s.ToString("yyyy-MM-dd")).ToList();
+                    var key = (week, w);
+                    wkKw[key] = wkKw.TryGetValue(key, out var c) ? c + 1 : 1;
+                    kwTotals[w] = kwTotals.TryGetValue(w, out var t) ? t + 1 : 1;
+                }
+            }
 
-    var series = topTopics.Select(topic =>
-    {
-        var porSemana = itens.Where(i => (i.Titulo ?? "(Sem título)") == topic)
-                             .GroupBy(i => WeekBucket(i.Data))
-                             .ToDictionary(g => g.Key, g => g.Count());
+            // top N keywords globais por volume
+            var topKeywords = kwTotals
+                .OrderByDescending(kv => kv.Value)
+                .Take(topN)
+                .Select(kv => kv.Key)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        var data = semanas.Select(s => porSemana.TryGetValue(s, out var c) ? c : 0).ToList();
-        return new { name = topic, data };
-    }).ToList();
+            // projeta no formato que o frontend espera: [{ week, topic, total }]
+            var data = wkKw
+                .Where(kv => topKeywords.Contains(kv.Key.kw))
+                .OrderBy(kv => kv.Key.week)
+                .Select(kv => new
+                {
+                    week = kv.Key.week.ToString("yyyy-MM-dd"),
+                    topic = kv.Key.kw,
+                    total = kv.Value
+                });
 
-    return Results.Ok(new { labels, series });
-});
+            return Results.Ok(data);
+        });
+
 
 
         g.MapGet("/topics-polarity", async (DateTime? from, DateTime? to, Guid? categoryId, AppDbContext db) =>
@@ -452,49 +575,6 @@ api.MapGet("/dashboard/series", async (
  });
 
 
-
-        g.MapGet("/wordcloud", async (string polarity, DateTime? from, DateTime? to, Guid? categoryId, int? limit, int? minLen, AppDbContext db) =>
- {
-     var pol = (polarity ?? "neg").ToLowerInvariant(); // "pos"|"neg"
-     var inicio = (from ?? DateTime.UtcNow.Date.AddDays(-30)).Date;
-     var fim = (to ?? DateTime.UtcNow).Date.AddDays(1).AddTicks(-1);
-     int topN = limit is > 0 ? limit!.Value : 200;
-     int minL = minLen is > 0 ? minLen!.Value : 3;
-
-     var baseQ = db.FeedbackRespostas.AsNoTracking()
-         .Where(r => r.ValorTexto != null && r.ValorTexto != "" && r.Feedback.CriadoEm >= inicio && r.Feedback.CriadoEm <= fim);
-
-     if (categoryId.HasValue)
-         baseQ = baseQ.Where(r => r.Feedback.CategoriaId == categoryId.Value);
-
-     // filtro simples por nota: neg <=6 | pos >=9 (quando houver)
-     if (pol == "neg")
-         baseQ = baseQ.Where(r => r.ValorNota != null && r.ValorNota <= 6);
-     else
-         baseQ = baseQ.Where(r => r.ValorNota != null && r.ValorNota >= 9);
-
-     var textos = await baseQ.Select(r => r.ValorTexto!).ToListAsync();
-
-     var tokens = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-     foreach (var phrase in textos)
-     {
-         var text = RemoveDiacritics(phrase.ToLowerInvariant());
-         foreach (var raw in TokenSplit.Split(text))
-         {
-             var w = raw.Trim();
-             if (w.Length < minL) continue;
-             if (Stopwords.Contains(w)) continue;
-             if (int.TryParse(w, out _)) continue;
-
-             tokens[w] = tokens.TryGetValue(w, out var c) ? c + 1 : 1;
-         }
-     }
-
-     var result = tokens.OrderByDescending(kv => kv.Value).Take(topN)
-         .Select(kv => new { word = kv.Key, count = kv.Value });
-
-     return Results.Ok(result);
- });
 
         // 1) NPS por período (para o gráfico "NPS (tendência)")
         g.MapGet("/nps-series", async (string? interval, DateTime? from, DateTime? to, AppDbContext db) =>
@@ -594,47 +674,47 @@ api.MapGet("/dashboard/series", async (
         });
 
         // 5) Piores perguntas (para "Piores perguntas – Top 5")
-// 5) Piores perguntas (Top 5) — compatível com from/to e inicio/fim
-g.MapGet("/questions-worst", async (
-    AppDbContext db,
-    // Nomes novos (frontend): from/to
-    DateTime? from,
-    DateTime? to,
-    // Nomes antigos (se algum lugar ainda chamar): inicio/fim
-    DateTime? inicio,
-    DateTime? fim,
-    Guid? categoryId,
-    int? limit) =>
-{
-    // Resolver intervalo aceitando qualquer combinação
- // Calcula intervalo e normaliza para UTC (não misturar Kinds)
-var startLocal = (from ?? inicio ?? DateTime.UtcNow.AddDays(-30));
-var endLocal   = (to   ?? fim    ?? DateTime.UtcNow);
-
-var start = AsUtc(startLocal.Date);                             // 00:00 UTC do dia
-var end   = AsUtc(endLocal.Date.AddDays(1).AddTicks(-1));       // 23:59:59.9999999 UTC do dia
-
-    var take  = (limit is > 0 ? limit!.Value : 5);
-
-    var data = await db.FeedbackRespostas.AsNoTracking()
-        .Where(r => r.ValorNota != null &&
-                    r.Feedback.CriadoEm >= start &&
-                    r.Feedback.CriadoEm <= end &&
-                    (!categoryId.HasValue || r.Feedback.CategoriaId == categoryId))
-        .GroupBy(r => new { r.PerguntaId, r.Pergunta.Enunciado })
-        .Select(g => new
+        // 5) Piores perguntas (Top 5) — compatível com from/to e inicio/fim
+        g.MapGet("/questions-worst", async (
+            AppDbContext db,
+            // Nomes novos (frontend): from/to
+            DateTime? from,
+            DateTime? to,
+            // Nomes antigos (se algum lugar ainda chamar): inicio/fim
+            DateTime? inicio,
+            DateTime? fim,
+            Guid? categoryId,
+            int? limit) =>
         {
-            questionId = g.Key.PerguntaId,
-            pergunta   = g.Key.Enunciado,
-            media      = g.Average(x => (double)x.ValorNota!)
-        })
-        .OrderBy(x => x.media) // piores primeiro
-        .Take(take)
-        .ToListAsync();
+            // Resolver intervalo aceitando qualquer combinação
+            // Calcula intervalo e normaliza para UTC (não misturar Kinds)
+            var startLocal = (from ?? inicio ?? DateTime.UtcNow.AddDays(-30));
+            var endLocal = (to ?? fim ?? DateTime.UtcNow);
 
-    return Results.Ok(data);
-});
-// ===== Categorias (lista leve p/ filtros) =====
+            var start = AsUtc(startLocal.Date);                             // 00:00 UTC do dia
+            var end = AsUtc(endLocal.Date.AddDays(1).AddTicks(-1));       // 23:59:59.9999999 UTC do dia
+
+            var take = (limit is > 0 ? limit!.Value : 5);
+
+            var data = await db.FeedbackRespostas.AsNoTracking()
+                .Where(r => r.ValorNota != null &&
+                            r.Feedback.CriadoEm >= start &&
+                            r.Feedback.CriadoEm <= end &&
+                            (!categoryId.HasValue || r.Feedback.CategoriaId == categoryId))
+                .GroupBy(r => new { r.PerguntaId, r.Pergunta.Enunciado })
+                .Select(g => new
+                {
+                    questionId = g.Key.PerguntaId,
+                    pergunta = g.Key.Enunciado,
+                    media = g.Average(x => (double)x.ValorNota!)
+                })
+                .OrderBy(x => x.media) // piores primeiro
+                .Take(take)
+                .ToListAsync();
+
+            return Results.Ok(data);
+        });
+        // ===== Categorias (lista leve p/ filtros) =====
 
         return api;
     }
@@ -662,13 +742,13 @@ var end   = AsUtc(endLocal.Date.AddDays(1).AddTicks(-1));       // 23:59:59.9999
 
     // Auxiliares de bucket de data
     // Normaliza qualquer DateTime para UTC (evita mix de Kinds)
-private static DateTime AsUtc(DateTime dt)
-    => dt.Kind switch
-    {
-        DateTimeKind.Utc   => dt,
-        DateTimeKind.Local => dt.ToUniversalTime(),
-        _                  => DateTime.SpecifyKind(dt, DateTimeKind.Utc)
-    };
+    private static DateTime AsUtc(DateTime dt)
+        => dt.Kind switch
+        {
+            DateTimeKind.Utc => dt,
+            DateTimeKind.Local => dt.ToUniversalTime(),
+            _ => DateTime.SpecifyKind(dt, DateTimeKind.Utc)
+        };
 
     private static DateTime WeekBucket(DateTime dt) => dt.Date.AddDays(-(int)dt.Date.DayOfWeek).Date;
 
